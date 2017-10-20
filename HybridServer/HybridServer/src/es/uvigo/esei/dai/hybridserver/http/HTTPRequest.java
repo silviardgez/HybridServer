@@ -85,8 +85,7 @@ public class HTTPRequest {
 	 * Recupera información de petición HTTP
 	 * 
 	 * @throws IOException
-	 * @throws HTTPParseException
-	 *             si la petición HTTP es incorrecta.
+	 * @throws HTTPParseException si la petición HTTP es incorrecta.
 	 */
 	private void initValues() throws IOException, HTTPParseException {
 
@@ -95,7 +94,7 @@ public class HTTPRequest {
 		String[] firstLine = this.reader.readLine().split(" ");
 
 		if (firstLine.length != 3) {
-			throw new HTTPParseException("Primera línea de la petición HTTP incorrecta.");
+			throw new HTTPParseException("Invalid HTTPRequest first line.");
 		}
 
 		this.method = HTTPRequestMethod.valueOf(firstLine[0]);
@@ -133,9 +132,14 @@ public class HTTPRequest {
 		} else {
 			this.resourceName = this.resourceChain.substring(1);
 
-			// Comprobar si hay contenido en la petición (parámetros) y se lee
-			if (this.resourceHeaderParameters.get("Content-Length") != null) {
-				this.content = this.reader.readLine();
+			// Comprobar si hay contenido
+			if (this.contentLength > 0) {
+				char[] contentArray = new char[this.contentLength];
+				if(this.reader.read(contentArray) != contentArray.length){
+					throw new HTTPParseException("Invalid content length");
+				}
+				
+				this.content = new String(contentArray);
 
 				// Descifrar el contenido
 				if (this.resourceHeaderParameters.get("Content-Type") != null && this.resourceHeaderParameters
@@ -161,7 +165,5 @@ public class HTTPRequest {
 		if (!resourceName.equals("")) {
 			resourcePath = this.resourceName.split("\\/");
 		}
-
-		this.reader.close();
 	}
 }
