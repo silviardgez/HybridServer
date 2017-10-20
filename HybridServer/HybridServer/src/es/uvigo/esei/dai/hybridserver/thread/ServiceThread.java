@@ -49,7 +49,7 @@ public class ServiceThread implements Runnable {
 			try {
 				manager.response();
 			} catch (Exception e) {
-				response.setStatus(HTTPResponseStatus.S200);
+				response.setStatus(HTTPResponseStatus.S500);
 			}
 
 			OutputStream out = socket.getOutputStream();
