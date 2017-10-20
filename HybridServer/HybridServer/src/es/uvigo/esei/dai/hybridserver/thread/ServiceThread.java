@@ -28,7 +28,7 @@ import es.uvigo.esei.dai.hybridserver.html.HtmlManager;
 import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
 import es.uvigo.esei.dai.hybridserver.http.HTTPRequest;
 import es.uvigo.esei.dai.hybridserver.http.HTTPResponse;
-
+import es.uvigo.esei.dai.hybridserver.http.HTTPResponseStatus;
 
 public class ServiceThread implements Runnable {
 	private final Socket socket;
@@ -42,20 +42,25 @@ public class ServiceThread implements Runnable {
 	@Override
 	public void run() {
 		try (Socket socket = this.socket) {
-				InputStreamReader in = new InputStreamReader(socket.getInputStream());
-				HTTPRequest request = new HTTPRequest(in);
-				HTTPResponse response = new HTTPResponse();
-				HtmlManager manager = new HtmlManager(request, response, this.htmlController);
-
+			InputStreamReader in = new InputStreamReader(socket.getInputStream());
+			HTTPRequest request = new HTTPRequest(in);
+			HTTPResponse response = new HTTPResponse();
+			HtmlManager manager = new HtmlManager(request, response, this.htmlController);
+			try {
 				manager.response();
-				
-				OutputStream out = socket.getOutputStream();
-				response.print(new OutputStreamWriter(out));
-				out.flush();
+			} catch (Exception e) {
+				response.setStatus(HTTPResponseStatus.S200);
+			}
+
+			OutputStream out = socket.getOutputStream();
+			response.print(new OutputStreamWriter(out));
+			out.flush();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (HTTPParseException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

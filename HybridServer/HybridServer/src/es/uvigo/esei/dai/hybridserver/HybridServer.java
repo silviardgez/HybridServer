@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import es.uvigo.esei.dai.hybridserver.html.HtmlController;
 import es.uvigo.esei.dai.hybridserver.html.HtmlDAO;
+import es.uvigo.esei.dai.hybridserver.html.HtmlDBDAO;
 import es.uvigo.esei.dai.hybridserver.html.HtmlMapDAO;
 import es.uvigo.esei.dai.hybridserver.thread.ServiceThread;
 
@@ -34,14 +35,16 @@ public class HybridServer {
 
 	public HybridServer() {
 		this.numClients = 50;
+		this.port = SERVICE_PORT;
 		this.dbUrl = "jdbc:mysql://localhost:3306/hstestdb";
 		this.dbUser = "hsdb";
 		this.dbPassword = "hsdbpass";
-		this.dao = null;
+		this.dao = new HtmlDBDAO(dbUrl,dbUser,dbPassword);
 	}
 
 	public HybridServer(Map<String, String> pages) {
 		this.numClients = 50;
+		this.port = SERVICE_PORT;
 		this.dao = new HtmlMapDAO(pages);
 	}
 
@@ -52,19 +55,19 @@ public class HybridServer {
 		this.dbUrl = properties.getProperty("db.url");
 		this.dbUser = properties.getProperty("db.user");
 		this.dbPassword = properties.getProperty("db.password");
-		this.dao = null;
+		this.dao = new HtmlDBDAO(dbUrl,dbUser,dbPassword);
 
 	}
 
 	public int getPort() {
-		return SERVICE_PORT;
+		return port;
 	}
 
 	public void start() {
 		this.serverThread = new Thread() {
 			@Override
 			public void run() {
-				try (final ServerSocket serverSocket = new ServerSocket(SERVICE_PORT)) {
+				try (final ServerSocket serverSocket = new ServerSocket(getPort())) {
 
 					ExecutorService threadPool = Executors.newFixedThreadPool(getNumClients());
 					while (true) {
@@ -94,9 +97,8 @@ public class HybridServer {
 	public void stop() {
 		this.stop = true;
 
-		try (Socket socket = new Socket("localhost", SERVICE_PORT)) {
-			// Esta conexión se hace, simplemente, para "despertar" el hilo
-			// servidor
+		try (Socket socket = new Socket("localhost", getPort())) {
+			// Esta conexión se hace, simplemente, para "despertar" el hilo servidor
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
