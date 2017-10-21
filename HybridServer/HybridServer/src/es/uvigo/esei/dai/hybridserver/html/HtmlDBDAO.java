@@ -20,6 +20,28 @@ public class HtmlDBDAO implements HtmlDAO {
 		this.user = user;
 		this.password = password;
 	}
+	
+	@Override
+	public Document get(String uuid) throws SQLException {
+		Document document;
+		
+		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
+			try (PreparedStatement prepStatement = connection
+					.prepareStatement("SELECT * FROM HTML " + "WHERE uuid = ? ")) {
+				
+				prepStatement.setString(1, uuid);
+				
+				try (ResultSet result = prepStatement.executeQuery()) {
+					if (result.next()) {
+						document = new Document(uuid, result.getString("content"));
+						return document;
+					} else {
+						return null;
+					}
+				}
+			}
+		}
+	}
 
 	@Override
 	public List<Document> list() throws SQLException {
@@ -29,10 +51,10 @@ public class HtmlDBDAO implements HtmlDAO {
 			try (Statement statement = connection.createStatement()) {
 				try (ResultSet result = statement.executeQuery("SELECT * FROM HTML")) {
 					while (result.next()) {
-						String uuid = result.getString(1);
-						String contenido = result.getString(2);
-						Document documento = new Document(uuid, contenido);
-						toret.add(documento);
+						String uuid = result.getString("uuid");
+						String content = result.getString("content");
+						Document document = new Document(uuid, content);
+						toret.add(document);
 					}
 				}
 			}
@@ -40,28 +62,6 @@ public class HtmlDBDAO implements HtmlDAO {
 		return toret;
 	}
 
-	@Override
-	public Document get(String uuid) throws SQLException {
-		Document documento;
-
-		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
-			try (PreparedStatement prepStatement = connection
-					.prepareStatement("SELECT * FROM HTML " + "WHERE uuid = ? ")) {
-				prepStatement.setString(1, uuid);
-
-				try (ResultSet result = prepStatement.executeQuery()) {
-					String contenido;
-					if (result.next()) {
-						contenido = result.getString(2);
-						documento = new Document(uuid, contenido);
-						return documento;
-					} else {
-						return null;
-					}
-				}
-			}
-		}
-	}
 
 	@Override
 	public void insert(String uuid, String content) throws SQLException {

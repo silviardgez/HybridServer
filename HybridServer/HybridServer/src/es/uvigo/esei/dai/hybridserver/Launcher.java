@@ -13,12 +13,14 @@ public class Launcher {
 		if (args.length == 0) {
 			server = new HybridServer();
 			server.start();
+			
 		} else if (args.length == 1) {
 			Properties properties = new Properties();
 			FileInputStream inStream = new FileInputStream(args[0]);
 			properties.load(inStream);
 			server = new HybridServer(properties);
 			server.start();
+			
 		} else {
 			System.err.println("Invalid arguments.");
 		}

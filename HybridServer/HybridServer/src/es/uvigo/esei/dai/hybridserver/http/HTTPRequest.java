@@ -142,8 +142,8 @@ public class HTTPRequest {
 				this.content = new String(contentArray);
 
 				// Descifrar el contenido
-				if (this.resourceHeaderParameters.get("Content-Type") != null && this.resourceHeaderParameters
-						.get("Content-Type").startsWith("application/x-www-form-urlencoded")) {
+				String type = this.resourceHeaderParameters.get("Content-Type");
+				if (type != null && type.startsWith("application/x-www-form-urlencoded")) {
 					this.content = URLDecoder.decode(this.content, "UTF-8");
 				}
 				parameters = this.content.split("\\&");

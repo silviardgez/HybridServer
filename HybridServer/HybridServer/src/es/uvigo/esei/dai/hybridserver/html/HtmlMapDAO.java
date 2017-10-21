@@ -22,13 +22,12 @@ public class HtmlMapDAO implements HtmlDAO {
 		}
 	}
 	
-	
 	@Override
 	public List<Document> list() {
 		List<String> keys = new ArrayList<>(this.pages.keySet());
 		List<Document> documents = new ArrayList<>();
-		String key;
 		
+		String key;
 		final Iterator<String> itKeys = keys.iterator();
 		while (itKeys.hasNext()) {
 			key = itKeys.next();
