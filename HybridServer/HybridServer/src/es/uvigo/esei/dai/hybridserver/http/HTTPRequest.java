@@ -117,7 +117,7 @@ public class HTTPRequest {
 				}
 
 			} else {
-				throw new HTTPParseException("La cabecera no se ha escrito correctamente.");
+				throw new HTTPParseException("Invalid HTTPRequest.");
 			}
 		}
 
@@ -136,7 +136,7 @@ public class HTTPRequest {
 			if (this.contentLength > 0) {
 				char[] contentArray = new char[this.contentLength];
 				if(this.reader.read(contentArray) != contentArray.length){
-					throw new HTTPParseException("Invalid content length");
+					throw new HTTPParseException("Invalid content length.");
 				}
 				
 				this.content = new String(contentArray);

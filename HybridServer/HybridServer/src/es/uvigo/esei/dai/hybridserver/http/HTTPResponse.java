@@ -4,11 +4,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class HTTPResponse {
 
@@ -62,11 +62,18 @@ public class HTTPResponse {
 	}
 
 	public void clearParameters() {
+		this.parameters.clear();
 	}
 
 	public List<String> listParameters() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> parameters = new ArrayList<>();
+		Iterator<String> itParametersName = this.parameters.keySet().iterator();
+
+		while (itParametersName.hasNext()) {
+			String name = itParametersName.next();
+			parameters.add(name + ": " + this.parameters.get(name));
+		}
+		return parameters;
 	}
 
 	public void print(Writer writer) throws IOException {
@@ -75,31 +82,21 @@ public class HTTPResponse {
 			buffer.write(this.getVersion() + " " + this.getStatus().getCode() + " " + this.getStatus().getStatus());
 			buffer.newLine();
 
-			if (this.getParameters() != null) {
-				if (!this.parameters.isEmpty()) {
-					Set<String> listaClaves = this.getParameters().keySet();
-					Iterator<String> it = listaClaves.iterator();
-					while (it.hasNext()) {
-						String clave = it.next();
-						String parametro = this.getParameters().get(clave);
-						buffer.newLine();
-						buffer.write(clave + ": " + parametro);
-					}
-					buffer.newLine();
-					buffer.newLine();
-				}
+			if (!this.getParameters().isEmpty()) {
+				buffer.write(listParameters().toString());
+				buffer.newLine();
+				buffer.newLine();
 			}
 
 			if (this.getContent() != null) {
-				int tamanho = this.getContent().length();
-				buffer.write("Content-Length: " + tamanho);
+				buffer.write("Content-Length: " + this.getContent().length());
 				buffer.newLine();
 				buffer.newLine();
 				buffer.write(this.getContent());
 			} else {
 				buffer.newLine();
 			}
-
+			
 			buffer.flush();
 		}
 	}
@@ -112,7 +109,7 @@ public class HTTPResponse {
 			this.print(writer);
 		} catch (IOException e) {
 		}
-
+		
 		return writer.toString();
 	}
 }
