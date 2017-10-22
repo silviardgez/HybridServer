@@ -42,13 +42,14 @@ public class ServiceThread implements Runnable {
 	@Override
 	public void run() {
 		try (Socket socket = this.socket) {
-			InputStreamReader in = new InputStreamReader(socket.getInputStream());
-			HTTPRequest request = new HTTPRequest(in);
+			HTTPRequest request = new HTTPRequest(new InputStreamReader(socket.getInputStream()));
 			HTTPResponse response = new HTTPResponse();
 			HtmlManager manager = new HtmlManager(request, response, this.htmlController);
+			
 			try {
-				manager.response();
+				manager.getResponse();
 			} catch (Exception e) {
+				//Si sucede algún error en las consultas a la BD
 				response.setStatus(HTTPResponseStatus.S500);
 				response.setContent(HTTPResponseStatus.S500.getStatus());
 			}

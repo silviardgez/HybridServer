@@ -83,10 +83,11 @@ public class HtmlDBDAO implements HtmlDAO {
 	public boolean delete(String uuid) throws SQLException {
 		boolean removed = true;
 		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
-			try (PreparedStatement prepStatement = connection
+			try (PreparedStatement statement = connection
 					.prepareStatement("DELETE FROM HTML " + "WHERE uuid = ?")) {
-				prepStatement.setString(1, uuid);
-				int result = prepStatement.executeUpdate();
+				statement.setString(1, uuid);
+				
+				int result = statement.executeUpdate();
 
 				if (result != 1) {
 					removed = false;

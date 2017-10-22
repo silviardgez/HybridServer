@@ -8,6 +8,7 @@ import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
 
 public class Launcher {
 	public static void main(String[] args) throws HTTPParseException, IOException {
+		
 		HybridServer server;
 		
 		if (args.length == 0) {
