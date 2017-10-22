@@ -39,7 +39,7 @@ public class HybridServer {
 		this.dbUrl = "jdbc:mysql://localhost:3306/hstestdb";
 		this.dbUser = "hsdb";
 		this.dbPassword = "hsdbpass";
-		this.dao = new HtmlDBDAO(dbUrl,dbUser,dbPassword);
+		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
 	}
 
 	public HybridServer(Map<String, String> pages) {
@@ -55,7 +55,7 @@ public class HybridServer {
 		this.dbUrl = properties.getProperty("db.url");
 		this.dbUser = properties.getProperty("db.user");
 		this.dbPassword = properties.getProperty("db.password");
-		this.dao = new HtmlDBDAO(dbUrl,dbUser,dbPassword);
+		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
 
 	}
 
@@ -76,7 +76,9 @@ public class HybridServer {
 
 							if (stop)
 								break;
+
 							HtmlController htmlController = new HtmlController(getDao());
+
 							threadPool.execute(new ServiceThread(socket, htmlController));
 
 						} catch (IOException e) {
@@ -98,7 +100,8 @@ public class HybridServer {
 		this.stop = true;
 
 		try (Socket socket = new Socket("localhost", getPort())) {
-			// Esta conexión se hace, simplemente, para "despertar" el hilo servidor
+			// Esta conexión se hace, simplemente, para "despertar" el hilo
+			// servidor
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

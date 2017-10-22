@@ -52,7 +52,9 @@ public class HtmlManager {
 								response.setStatus(HTTPResponseStatus.S404);
 							}
 						}
-						// Si no tiene parámetros se listan los enlaces a todas las páginas
+
+						// Si no tiene parámetros se listan los enlaces a todas
+						// las páginas
 					} else {
 						response.setContent(listPages());
 						response.setStatus(HTTPResponseStatus.S200);
@@ -111,26 +113,24 @@ public class HtmlManager {
 	/**
 	 * Página por defecto cuando el usuario accede a la raíz
 	 * 
-	 * @throws Exception
 	 */
-	private void welcomePage() throws Exception {
+	private void welcomePage() {
 		String content = "<head><meta charset=\"utf-8\"></head>" + "<h1>Hybrid Server</h1>"
 				+ "<p>Silvia Rodríguez Iglesias</p>" + "<p>Ismael Vázquez Fernández</p>";
 		String pages = "";
-		response.setStatus(HTTPResponseStatus.S200);
-		if (this.controller != null) {
-			pages = this.listPages();
-		}
+
+		// Muestra enlace al listado de páginas del servidor
+		pages = "<a href='html'>Páginas disponibles</a>";
+
 		response.setContent(content + pages);
 		response.setStatus(HTTPResponseStatus.S200);
-
 	}
 
 	/**
 	 * Lista los enlaces a las páginas disponibles
 	 * 
 	 * @return String con las páginas en html
-	 * @throws Exception
+	 * @throws Exception Si ocurre un error al acceder a las páginas almacenadas
 	 */
 	private String listPages() throws Exception {
 		List<Document> pages = this.controller.list();

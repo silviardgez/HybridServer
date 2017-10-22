@@ -50,6 +50,7 @@ public class ServiceThread implements Runnable {
 				manager.response();
 			} catch (Exception e) {
 				response.setStatus(HTTPResponseStatus.S500);
+				response.setContent(HTTPResponseStatus.S500.getStatus());
 			}
 
 			OutputStream out = socket.getOutputStream();
