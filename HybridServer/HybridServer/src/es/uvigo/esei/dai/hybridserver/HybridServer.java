@@ -25,13 +25,6 @@ public class HybridServer {
 	private String dbPassword;
 	private HtmlDAO dao;
 
-	public int getNumClients() {
-		return numClients;
-	}
-
-	public HtmlDAO getDao() {
-		return dao;
-	}
 
 	public HybridServer() {
 		this.numClients = 50;
@@ -49,18 +42,24 @@ public class HybridServer {
 	}
 
 	public HybridServer(Properties properties) {
-
 		this.numClients = Integer.parseInt(properties.getProperty("numClients"));
 		this.port = Integer.parseInt(properties.getProperty("port"));
 		this.dbUrl = properties.getProperty("db.url");
 		this.dbUser = properties.getProperty("db.user");
 		this.dbPassword = properties.getProperty("db.password");
 		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
-
 	}
 
 	public int getPort() {
 		return port;
+	}
+	
+	public int getNumClients() {
+		return numClients;
+	}
+
+	public HtmlDAO getDao() {
+		return dao;
 	}
 
 	public void start() {
@@ -74,11 +73,9 @@ public class HybridServer {
 						try {
 							Socket socket = serverSocket.accept();
 
-							if (stop)
-								break;
+							if (stop) break;
 
 							HtmlController htmlController = new HtmlController(getDao());
-
 							threadPool.execute(new ServiceThread(socket, htmlController));
 
 						} catch (IOException e) {
