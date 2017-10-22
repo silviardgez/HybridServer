@@ -51,15 +51,15 @@ public class HybridServer {
 	}
 
 	public int getPort() {
-		return port;
+		return this.port;
 	}
 	
 	public int getNumClients() {
-		return numClients;
+		return this.numClients;
 	}
 
 	public HtmlDAO getDao() {
-		return dao;
+		return this.dao;
 	}
 
 	public void start() {
@@ -97,8 +97,7 @@ public class HybridServer {
 		this.stop = true;
 
 		try (Socket socket = new Socket("localhost", getPort())) {
-			// Esta conexión se hace, simplemente, para "despertar" el hilo
-			// servidor
+			// Esta conexión se hace, simplemente, para "despertar" el hilo servidor
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

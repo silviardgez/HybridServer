@@ -68,41 +68,37 @@ public class HtmlManager {
 			}
 
 			break;
+			
 		case POST:
-			// Comprobamos si el recurso es html
-			if (request.getResourceName().equals("html")) {
-				// Comprobamos si existe el parámetro html
-				if (request.getResourceParameters().containsKey("html")) {
-					UUID randomUuid = UUID.randomUUID();
-					String uuid = randomUuid.toString();
-					this.controller.insert(uuid, request.getResourceParameters().get("html"));
-					response.setContent("<a href=\"html?uuid=" + uuid + "\">" + uuid + "</a>");
-					response.setStatus(HTTPResponseStatus.S200);
-					// Si el parámetro html no existe devuelve error
-				} else {
-					response.setContent(HTTPResponseStatus.S400.getStatus());
-					response.setStatus(HTTPResponseStatus.S400);
-				}
+			// Comprobamos si el recurso es html y si existe el parámetro html
+			if (request.getResourceName().equals("html") && request.getResourceParameters().containsKey("html")) {
+				UUID randomUuid = UUID.randomUUID();
+				String uuid = randomUuid.toString();
+				this.controller.insert(uuid, request.getResourceParameters().get("html"));
+				response.setContent("<a href=\"html?uuid=" + uuid + "\">" + uuid + "</a>");
+				response.setStatus(HTTPResponseStatus.S200);
+			// Si el recurso no es html o el parámetro html no existe devuelve error
+			} else {
+				response.setContent(HTTPResponseStatus.S400.getStatus());
+				response.setStatus(HTTPResponseStatus.S400);
 			}
 			break;
+			
 		case DELETE:
-			// Comprobamos si el recurso es html
-			if (request.getResourceName().equals("html")) {
-				// Comprobamos si tiene parámetros y uno es el uuid
-				if (!request.getResourceParameters().isEmpty()) {
-					Map<String, String> parameters = request.getResourceParameters();
-					// Comprobamos si uno de los parámetros es el uuid
-					if (parameters.containsKey("uuid")) {
-						String uuid = parameters.get("uuid");
-						if (this.controller.delete(uuid)) {
-							response.setContent(HTTPResponseStatus.S200.getStatus());
-							response.setStatus(HTTPResponseStatus.S200);
-						} else {
-							response.setContent(HTTPResponseStatus.S400.getStatus());
-							response.setStatus(HTTPResponseStatus.S400);
-						}
-					}
+			// Comprobamos si el recurso es html y si existe el parámetro uuid
+			if (request.getResourceName().equals("html") && request.getResourceParameters().containsKey("uuid")) {
+				String uuid = request.getResourceParameters().get("uuid");
+				if (this.controller.delete(uuid)) {
+					response.setStatus(HTTPResponseStatus.S200);
+					response.setContent(HTTPResponseStatus.S200.getStatus() + ": Page successfully deleted.");
+				} else {
+					response.setStatus(HTTPResponseStatus.S404);
+					response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
 				}
+				// Si el recurso no es html o no existe el parámetro uuid muestra error
+			} else {
+				response.setStatus(HTTPResponseStatus.S400);
+				response.setContent(HTTPResponseStatus.S400.getStatus());
 			}
 			break;
 		default:
@@ -112,7 +108,6 @@ public class HtmlManager {
 
 	/**
 	 * Página por defecto cuando el usuario accede a la raíz
-	 * 
 	 */
 	private void welcomePage() {
 		String content = "<head><meta charset=\"utf-8\"></head>" + "<h1>Hybrid Server</h1>"
@@ -130,7 +125,8 @@ public class HtmlManager {
 	 * Lista los enlaces a las páginas disponibles
 	 * 
 	 * @return String con las páginas en html
-	 * @throws Exception Si ocurre un error al acceder a las páginas almacenadas
+	 * @throws Exception
+	 *             Si ocurre un error al acceder a las páginas almacenadas
 	 */
 	private String listPages() throws Exception {
 		List<Document> pages = this.controller.list();

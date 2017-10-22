@@ -20,24 +20,23 @@ public class HtmlDBDAO implements HtmlDAO {
 		this.user = user;
 		this.password = password;
 	}
-	
+
 	@Override
 	public Document get(String uuid) throws SQLException {
-		Document document;
-		
+		// Si la página no está almacenada devuelve null
+		Document document = null;
+
 		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
 			try (PreparedStatement prepStatement = connection
 					.prepareStatement("SELECT * FROM HTML " + "WHERE uuid = ? ")) {
-				
+
 				prepStatement.setString(1, uuid);
-				
+
 				try (ResultSet result = prepStatement.executeQuery()) {
 					if (result.next()) {
 						document = new Document(uuid, result.getString("content"));
-						return document;
-					} else {
-						return null;
 					}
+					return document;
 				}
 			}
 		}
@@ -45,39 +44,34 @@ public class HtmlDBDAO implements HtmlDAO {
 
 	@Override
 	public List<Document> list() throws SQLException {
-		List<Document> toret = new LinkedList<Document>();
+		List<Document> documents = new LinkedList<Document>();
 
 		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
 			try (Statement statement = connection.createStatement()) {
 				try (ResultSet result = statement.executeQuery("SELECT * FROM HTML")) {
 					while (result.next()) {
-						String uuid = result.getString("uuid");
-						String content = result.getString("content");
-						Document document = new Document(uuid, content);
-						toret.add(document);
+						documents.add(new Document(result.getString("uuid"), result.getString("content")));
 					}
 				}
 			}
 		}
-		return toret;
+		return documents;
 	}
-
 
 	@Override
 	public void insert(String uuid, String content) throws SQLException {
 		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
 			try (PreparedStatement statement = connection
-					.prepareStatement("INSERT INTO HTML (uuid, content) "
-							+ "VALUES (?, ?)")) {
+					.prepareStatement("INSERT INTO HTML (uuid, content) VALUES (?, ?)")) {
 				statement.setString(1, uuid);
 				statement.setString(2, content);
 
-				int valor = statement.executeUpdate();
+				int value = statement.executeUpdate();
 
-				if (valor != 1) {
-					throw new RuntimeException("Error al hacer la inserción");
+				if (value != 1) {
+					throw new RuntimeException("Insertion error.");
 				}
-
+				
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
@@ -87,7 +81,7 @@ public class HtmlDBDAO implements HtmlDAO {
 
 	@Override
 	public boolean delete(String uuid) throws SQLException {
-		boolean toRet = true;
+		boolean removed = true;
 		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
 			try (PreparedStatement prepStatement = connection
 					.prepareStatement("DELETE FROM HTML " + "WHERE uuid = ?")) {
@@ -95,11 +89,10 @@ public class HtmlDBDAO implements HtmlDAO {
 				int result = prepStatement.executeUpdate();
 
 				if (result != 1) {
-					toRet = false;
-					throw new SQLException("Unexpected value");
+					removed = false;
 				}
 			}
 		}
-		return toRet;
+		return removed;
 	}
 }
