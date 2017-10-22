@@ -1,9 +1,11 @@
-package es.uvigo.esei.dai.hybridserver.html;
+package es.uvigo.esei.dai.hybridserver.html.model.dao;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
 
 public class HtmlMapDAO implements HtmlDAO {
 

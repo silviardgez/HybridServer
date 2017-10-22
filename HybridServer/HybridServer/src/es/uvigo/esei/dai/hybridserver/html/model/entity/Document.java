@@ -1,4 +1,4 @@
-package es.uvigo.esei.dai.hybridserver.html;
+package es.uvigo.esei.dai.hybridserver.html.model.entity;
 
 public class Document {
 	

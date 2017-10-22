@@ -23,8 +23,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import es.uvigo.esei.dai.hybridserver.html.HtmlController;
 import es.uvigo.esei.dai.hybridserver.html.HtmlManager;
+import es.uvigo.esei.dai.hybridserver.html.controller.HtmlController;
 import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
 import es.uvigo.esei.dai.hybridserver.http.HTTPRequest;
 import es.uvigo.esei.dai.hybridserver.http.HTTPResponse;

@@ -1,6 +1,8 @@
-package es.uvigo.esei.dai.hybridserver.html;
+package es.uvigo.esei.dai.hybridserver.html.model.dao;
 
 import java.util.List;
+
+import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
 
 public interface HtmlDAO {
 	public Document get(String uuid) throws Exception;

@@ -1,4 +1,4 @@
-package es.uvigo.esei.dai.hybridserver.html;
+package es.uvigo.esei.dai.hybridserver.html.model.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
+
+import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
 
 public class HtmlDBDAO implements HtmlDAO {
 

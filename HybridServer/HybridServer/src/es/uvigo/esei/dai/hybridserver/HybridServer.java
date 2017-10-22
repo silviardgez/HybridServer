@@ -8,10 +8,10 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import es.uvigo.esei.dai.hybridserver.html.HtmlController;
-import es.uvigo.esei.dai.hybridserver.html.HtmlDAO;
-import es.uvigo.esei.dai.hybridserver.html.HtmlDBDAO;
-import es.uvigo.esei.dai.hybridserver.html.HtmlMapDAO;
+import es.uvigo.esei.dai.hybridserver.html.controller.HtmlController;
+import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDAO;
+import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDBDAO;
+import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlMapDAO;
 import es.uvigo.esei.dai.hybridserver.thread.ServiceThread;
 
 public class HybridServer {

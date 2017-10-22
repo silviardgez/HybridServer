@@ -1,6 +1,9 @@
-package es.uvigo.esei.dai.hybridserver.html;
+package es.uvigo.esei.dai.hybridserver.html.controller;
 
 import java.util.List;
+
+import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDAO;
+import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
 
 public class HtmlController {
 	
