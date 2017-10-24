@@ -71,7 +71,7 @@ public class HTTPResponse {
 
 		while (itParametersName.hasNext()) {
 			String name = itParametersName.next();
-			parameters.add(name + ": " + this.parameters.get(name));
+			parameters.add(name + ": " + this.parameters.get(name) + "\r\n");
 		}
 		return parameters;
 	}
@@ -79,22 +79,18 @@ public class HTTPResponse {
 	public void print(Writer writer) throws IOException {
 		try (BufferedWriter buffer = new BufferedWriter(writer)) {
 
-			buffer.write(this.getVersion() + " " + this.getStatus().getCode() + " " + this.getStatus().getStatus());
-			buffer.newLine();
+			buffer.write(this.getVersion() + " " + this.getStatus().getCode() + " " 
+							+ this.getStatus().getStatus() + "\r\n");
 
 			if (!this.getParameters().isEmpty()) {
-				buffer.write(listParameters().toString());
-				buffer.newLine();
-				buffer.newLine();
+				buffer.write(listParameters().toString() + "\r\n\r\n");
 			}
 
 			if (this.getContent() != null) {
-				buffer.write("Content-Length: " + this.getContent().length());
-				buffer.newLine();
-				buffer.newLine();
+				buffer.write("Content-Length: " + this.getContent().length() + "\r\n\r\n");
 				buffer.write(this.getContent());
 			} else {
-				buffer.newLine();
+				buffer.write("\r\n");
 			}
 			
 			buffer.flush();
