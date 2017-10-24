@@ -19,6 +19,7 @@ public class Launcher {
 			Properties properties = new Properties();
 			FileInputStream inStream = new FileInputStream(args[0]);
 			properties.load(inStream);
+			inStream.close();
 			server = new HybridServer(properties);
 			server.start();
 			
