@@ -50,6 +50,10 @@ public class HybridServer {
 		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
 	}
 
+	public HybridServer(Configuration load) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getPort() {
 		return this.port;
 	}

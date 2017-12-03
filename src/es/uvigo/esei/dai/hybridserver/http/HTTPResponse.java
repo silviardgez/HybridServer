@@ -77,24 +77,24 @@ public class HTTPResponse {
 	}
 
 	public void print(Writer writer) throws IOException {
-		try (BufferedWriter buffer = new BufferedWriter(writer)) {
+		BufferedWriter buffer = new BufferedWriter(writer);
 
-			buffer.write(this.getVersion() + " " + this.getStatus().getCode() + " " 
-							+ this.getStatus().getStatus() + "\r\n");
+		buffer.write(
+				this.getVersion() + " " + this.getStatus().getCode() + " " + this.getStatus().getStatus() + "\r\n");
 
-			if (!this.getParameters().isEmpty()) {
-				buffer.write(listParameters().toString() + "\r\n\r\n");
-			}
-
-			if (this.getContent() != null) {
-				buffer.write("Content-Length: " + this.getContent().length() + "\r\n\r\n");
-				buffer.write(this.getContent());
-			} else {
-				buffer.write("\r\n");
-			}
-			
-			buffer.flush();
+		if (!this.getParameters().isEmpty()) {
+			buffer.write(listParameters().toString() + "\r\n\r\n");
 		}
+
+		if (this.getContent() != null) {
+			buffer.write("Content-Length: " + this.getContent().length() + "\r\n\r\n");
+			buffer.write(this.getContent());
+		} else {
+			buffer.write("\r\n");
+		}
+
+		buffer.flush();
+
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class HTTPResponse {
 			this.print(writer);
 		} catch (IOException e) {
 		}
-		
+
 		return writer.toString();
 	}
 }
