@@ -25,7 +25,7 @@ public class HtmlMapDAO implements HtmlDAO {
 	}
 	
 	@Override
-	public List<Document> list() {
+	public List<Document> list(String resource) {
 		List<String> keys = new ArrayList<>(this.pages.keySet());
 		List<Document> documents = new ArrayList<>();
 		

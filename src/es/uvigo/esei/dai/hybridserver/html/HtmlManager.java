@@ -184,19 +184,29 @@ public class HtmlManager {
 	 *             Si ocurre un error al acceder a las páginas almacenadas
 	 */
 	private String listPages() throws Exception {
-		List<Document> pages = this.controller.list();
-		Iterator<Document> itPages = pages.iterator();
+		String[] resources = {"HTML", "XML", "XSLT", "XSD"};
 		String uuids = "<h1>Local Server</h1>";
-		if (!pages.isEmpty()) {
-			uuids += "<ul>";
-			while (itPages.hasNext()) {
-				Document itPage = itPages.next();
-				uuids += "<li><a href='html?uuid=" + itPage.getUuid() + "'>" + itPage.getUuid() + "</a></li>";
+		
+		uuids += "<ul>";
+		for (int i = 0; i < resources.length; i++) {
+			List<Document> pages = this.controller.list(resources[i]);
+			Iterator<Document> itPages = pages.iterator();
+			if (!pages.isEmpty()) {
+				while (itPages.hasNext()) {
+					Document itPage = itPages.next();
+					uuids += "<li><a href='" + resources[i].toLowerCase() + "?uuid=" + itPage.getUuid() + "'>" + itPage.getUuid() + "</a></li>";
+				}
 			}
-			uuids += "</ul>";
-		} else {
-			uuids += "Server is empty.";
 		}
+		
+		//Si no se han añadido páginas
+		if(!uuids.contains("<li>")){
+			uuids += "</ul>";
+			uuids += "Server is empty.";
+		} else {
+			uuids += "</ul>";	
+		}
+		
 		return uuids;
 	}
 }

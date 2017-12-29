@@ -17,8 +17,8 @@ public class HtmlController {
 		return this.htmlDAO.get(uuid, resource);
 	}
 	
-	public List<Document> list() throws Exception{
-		return this.htmlDAO.list();
+	public List<Document> list(String resource) throws Exception{
+		return this.htmlDAO.list(resource);
 	}
 	
 	public boolean insert(String uuid, String content, String resource, String xsd) throws Exception{
