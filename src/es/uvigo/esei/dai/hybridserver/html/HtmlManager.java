@@ -30,32 +30,49 @@ public class HtmlManager {
 
 		// Comprobar el método
 		switch (request.getMethod()) {
+
+		// Cuando se realiza una solicitud
 		case GET:
 			if (request.getResourceName().isEmpty()) {
 				welcomePage();
 			} else {
-				// Comprobar si el recurso es html
-				if (request.getResourceName().equals("html")) {
+				String resource = request.getResourceName();
+				// Comprobar si el recurso es html, xml, xslt o xsd
+				if (resource.equals("html") || resource.equals("xml") || resource.equals("xslt")
+						|| resource.equals("xsd")) {
 					// Comprobar si tiene parámetros
 					if (!request.getResourceParameters().isEmpty()) {
 						Map<String, String> parameters = request.getResourceParameters();
-						// Comprobar si existe el parámetro uuid 
+						// Comprobar si existe el parámetro uuid
 						if (parameters.containsKey("uuid")) {
 							String uuid = parameters.get("uuid");
 							// Comprobar si la página está en el servidor
-							if (this.controller.get(uuid) != null) {
-								String pageContent = this.controller.get(uuid).getContent();
+							if (this.controller.get(uuid, resource) != null) {
+								String pageContent = this.controller.get(uuid, resource).getContent();
 								response.setStatus(HTTPResponseStatus.S200);
 								response.setContent(pageContent);
+								
+								//Se añaden los parámetros correspondientes según el recurso
+								if(resource.equals("html")) {
+									response.putParameter("Content-Type", "text/" + resource);
+								} else {
+									response.putParameter("Content-Type", "application/xml");
+								}
+
 							} else {
 								response.setStatus(HTTPResponseStatus.S404);
 								response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
 							}
-							
+
 						// Si no existe parámetro uuid muestra error
 						} else {
 							response.setStatus(HTTPResponseStatus.S400);
 							response.setContent(HTTPResponseStatus.S400.getStatus());
+						}
+
+						// Si el recurso es xml comprobar si existe el parámetro xslt
+						if (resource.equals("xml") && parameters.containsKey("xslt")) {
+							// TODO comprobar si xml es correcto
 						}
 
 					// Si no tiene parámetros se listan los enlaces a todas las páginas
@@ -64,7 +81,7 @@ public class HtmlManager {
 						response.setContent(listPages());
 					}
 
-				// Si el recurso no es html devuelve error
+				// Si el recurso no es html, xml, xslt o xsd devuelve error
 				} else {
 					response.setStatus(HTTPResponseStatus.S400);
 					response.setContent(HTTPResponseStatus.S400.getStatus());
@@ -74,16 +91,40 @@ public class HtmlManager {
 			break;
 
 		case POST:
-			// Comprobar si el recurso es html y si existe el parámetro html
-			if (request.getResourceName().equals("html") && request.getResourceParameters().containsKey("html")) {
+			// Comprobar si el recurso es html, xml, xslt o xsd y si existen los parámetros correspondientes
+			String resource = request.getResourceName();
+			Map<String, String> parameters = request.getResourceParameters();
+			if ((resource.equals("html") && parameters.containsKey("html"))
+					|| (resource.equals("xml") && parameters.containsKey("xml"))
+					|| (resource.equals("xsd") && parameters.containsKey("xsd"))
+					|| (resource.equals("xslt") && parameters.containsKey("xslt") && parameters.containsKey("xsd"))) {
+				
 				UUID randomUuid = UUID.randomUUID();
 				String uuid = randomUuid.toString();
-				this.controller.insert(uuid, request.getResourceParameters().get("html"));
-				response.setStatus(HTTPResponseStatus.S200);
-				response.setContent("<p>Page " + uuid + " inserted:</p>"
-						+ "<ul><li><a href=\"html?uuid=" + uuid + "\">" + uuid + "</a></li></ul>");
+				
+				// Si el recurso es xslt se añade el xsd asociado
+				if(resource.equals("xslt")) {
+					String xsd = parameters.get("xsd");
+					
+					//Si no existe el xsd asociado se devuelve error 404
+					if(!this.controller.insert(uuid, parameters.get(resource), resource, xsd)){
+						response.setStatus(HTTPResponseStatus.S404);
+						response.setContent(xsd + " " + HTTPResponseStatus.S404.getStatus());
+					} else {
+						response.setStatus(HTTPResponseStatus.S200);
+						response.setContent("<p>Page " + uuid + " inserted:</p>" + "<ul><li><a href=\"" + resource + "?uuid="
+								+ uuid + "\">" + uuid + "</a></li></ul>");
+					}
+				// Para cualquiera otro recurso se inserta directamente
+				} else {
+					this.controller.insert(uuid, parameters.get(resource), resource, null);
+					response.setStatus(HTTPResponseStatus.S200);
+					response.setContent("<p>Page " + uuid + " inserted:</p>" + "<ul><li><a href=\"" + resource + "?uuid="
+							+ uuid + "\">" + uuid + "</a></li></ul>");
+				}
+				
 
-			// Si el recurso no es html o el parámetro html no existe devuelve error
+			// Si el recurso no es html, xml, xslt o xsd o los parámetros correspondientes no existen
 			} else {
 				response.setStatus(HTTPResponseStatus.S400);
 				response.setContent(HTTPResponseStatus.S400.getStatus());
@@ -91,10 +132,14 @@ public class HtmlManager {
 			break;
 
 		case DELETE:
-			// Comprobar si el recurso es html y si existe el parámetro uuid
-			if (request.getResourceName().equals("html") && request.getResourceParameters().containsKey("uuid")) {
+			// Comprobar si el recurso es html, xml, xslt o xsd y si existe el
+			// parámetro uuid
+			String resourceDelete = request.getResourceName();
+
+			if ((resourceDelete.equals("html") || resourceDelete.equals("xml") || resourceDelete.equals("xslt")
+					|| resourceDelete.equals("xsd")) && request.getResourceParameters().containsKey("uuid")) {
 				String uuid = request.getResourceParameters().get("uuid");
-				if (this.controller.delete(uuid)) {
+				if (this.controller.delete(uuid, resourceDelete)) {
 					response.setStatus(HTTPResponseStatus.S200);
 					response.setContent(
 							HTTPResponseStatus.S200.getStatus() + ": Page " + uuid + " successfully deleted.");
@@ -103,7 +148,8 @@ public class HtmlManager {
 					response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
 				}
 
-			// Si el recurso no es html o no existe el parámetro uuid muestra error
+				// Si el recurso no es html, xml, xslt o xsd o no existe el
+				// parámetro uuid muestra error
 			} else {
 				response.setStatus(HTTPResponseStatus.S400);
 				response.setContent(HTTPResponseStatus.S400.getStatus());

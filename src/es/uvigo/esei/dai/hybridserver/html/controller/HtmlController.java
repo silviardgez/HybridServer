@@ -13,20 +13,20 @@ public class HtmlController {
 		this.htmlDAO = htmlDAO;
 	}
 	
-	public Document get(String uuid) throws Exception{
-		return this.htmlDAO.get(uuid);
+	public Document get(String uuid, String resource) throws Exception{
+		return this.htmlDAO.get(uuid, resource);
 	}
 	
 	public List<Document> list() throws Exception{
 		return this.htmlDAO.list();
 	}
 	
-	public void insert(String uuid, String content) throws Exception{
-		this.htmlDAO.insert(uuid, content);
+	public boolean insert(String uuid, String content, String resource, String xsd) throws Exception{
+		return this.htmlDAO.insert(uuid, content, resource, xsd);
 	}
 	
-	public boolean delete(String uuid) throws Exception{
-		return this.htmlDAO.delete(uuid);
+	public boolean delete(String uuid, String resource) throws Exception{
+		return this.htmlDAO.delete(uuid, resource);
 	}
 }
 

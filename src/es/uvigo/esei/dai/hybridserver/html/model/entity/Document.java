@@ -4,8 +4,10 @@ public class Document {
 	
 	private String uuid;
 	private String content;
+	private String xsd;
 	
-	public Document (String uuid, String content){
+
+	public Document (String uuid, String content, String xsd){
 		this.uuid = uuid;
 		this.content = content;
 	}
@@ -24,5 +26,13 @@ public class Document {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+	
+	public String getXsd() {
+		return xsd;
+	}
+	
+	public void setXsd(String xsd) {
+		this.xsd = xsd;
 	}
 }

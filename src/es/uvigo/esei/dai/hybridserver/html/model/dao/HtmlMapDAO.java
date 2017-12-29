@@ -16,9 +16,9 @@ public class HtmlMapDAO implements HtmlDAO {
 	}
 	
 	@Override
-	public Document get(String uuid) {
+	public Document get(String uuid, String resource) {
 		if (this.pages.containsKey(uuid)) {
-			return new Document(uuid, this.pages.get(uuid));
+			return new Document(uuid, this.pages.get(uuid), null);
 		} else {
 			return null;
 		}
@@ -33,19 +33,20 @@ public class HtmlMapDAO implements HtmlDAO {
 		final Iterator<String> itKeys = keys.iterator();
 		while (itKeys.hasNext()) {
 			key = itKeys.next();
-			documents.add(new Document(key,this.pages.get(key)));
+			documents.add(new Document(key,this.pages.get(key), null));
 		}
 		
 		return documents;
 	}
 	
 	@Override
-	public void insert(String uuid, String content) {
+	public boolean insert(String uuid, String content, String resource, String xsd) {
 		this.pages.put(uuid, content);
+		return true;
 	}
 	
 	@Override
-	public boolean delete(String uuid) {
+	public boolean delete(String uuid, String resource) {
 		if (this.pages.remove(uuid) == null) {
 			return false;
 		} 

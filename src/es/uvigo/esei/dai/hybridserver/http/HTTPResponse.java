@@ -83,7 +83,9 @@ public class HTTPResponse {
 				this.getVersion() + " " + this.getStatus().getCode() + " " + this.getStatus().getStatus() + "\r\n");
 
 		if (!this.getParameters().isEmpty()) {
-			buffer.write(listParameters().toString() + "\r\n\r\n");
+			for (String parameter : listParameters()) {
+				buffer.write(parameter);
+			}
 		}
 
 		if (this.getContent() != null) {
