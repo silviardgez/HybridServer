@@ -1,13 +1,14 @@
 package es.uvigo.esei.dai.hybridserver;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
+import java.io.File;
+//import java.io.FileInputStream;
+//import java.io.IOException;
+//import java.util.Properties;
 
-import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
+//import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
 
 public class Launcher {
-	public static void main(String[] args) throws HTTPParseException, IOException {
+	public static void main(String[] args) throws Exception {
 		
 		HybridServer server;
 		
@@ -16,11 +17,9 @@ public class Launcher {
 			server.start();
 			
 		} else if (args.length == 1) {
-			Properties properties = new Properties();
-			FileInputStream inStream = new FileInputStream(args[0]);
-			properties.load(inStream);
-			inStream.close();
-			server = new HybridServer(properties);
+			XMLConfigurationLoader XMLConf = new XMLConfigurationLoader();
+			File XMLFile = new File(args[0]);
+			server = new HybridServer(XMLConf.load(XMLFile));
 			server.start();
 			
 		} else {
