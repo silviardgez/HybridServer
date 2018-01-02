@@ -26,5 +26,6 @@ public class Launcher {
 		} else {
 			System.err.println("Invalid arguments.");
 		}
+
 	}
 }
