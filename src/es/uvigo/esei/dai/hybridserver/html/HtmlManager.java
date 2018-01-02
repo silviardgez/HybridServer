@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -74,8 +75,7 @@ public class HtmlManager {
 									response.putParameter("Content-Type", MIME.APPLICATION_XML.getMime());
 								}
 
-								// Si el recurso es xml comprobar si existe el
-								// parámetro xslt
+								// Si el recurso es xml comprobar si existe el parámetro xslt
 								if (resource.equals("xml") && parameters.containsKey("xslt")) {
 									String xslt = parameters.get("xslt");
 									Document xsltDocument = this.controller.get(xslt, "xslt");
@@ -98,7 +98,7 @@ public class HtmlManager {
 											bwXSD.write(this.controller.get(xsltDocument.getXsd(), "xsd").getContent());
 											bwXSD.close();
 
-											// Validar xml con xsd
+											// Validar xml con xsd y convertirlo con xslt
 											try {
 												org.w3c.dom.Document validatedDocument = XSLTUtils.validate("request.xml",
 														"request.xsd");
@@ -112,31 +112,31 @@ public class HtmlManager {
 														.getContent());
 												bwXSLT.close();
 
-												// Transformamos el xml con el
-												// xslt
+												// Transformamos el xml con el xslt
 												XSLTUtils.transform(new DOMSource(validatedDocument), new StreamSource(fileXSLT),
 														new StreamResult(writer));
 
-												// Al realizar la conversión se
-												// modifica el content type para
-												// servir el html
+												// Al realizar la conversión se modifica el content type para servir el html
 												response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 												response.setContent(writer.toString());
-											} catch (ParserConfigurationException | SAXException | IOException e) {
+												
+											} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
+												response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 												response.setStatus(HTTPResponseStatus.S400);
 												response.setContent(HTTPResponseStatus.S400.getStatus());
 											}
 
 										}
 
-										// Si no existe xslt dado muestra error
+									// Si no existe xslt dado muestra error
 									} else {
+										response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 										response.setStatus(HTTPResponseStatus.S404);
-										response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
+										response.setContent(xslt + " " + HTTPResponseStatus.S404.getStatus());
 									}
 								}
 
-								// Si el uuid no está en el servidor da error
+							// Si el uuid no está en el servidor da error
 							} else {
 								response.setStatus(HTTPResponseStatus.S404);
 								response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
