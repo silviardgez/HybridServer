@@ -63,19 +63,8 @@ public class HtmlManager {
 							String uuid = parameters.get("uuid");
 							// Comprobar si la página está en el servidor
 							if (this.controller.get(uuid, resource) != null) {
-								String pageContent = this.controller.get(uuid, resource).getContent();
-								response.setStatus(HTTPResponseStatus.S200);
-								response.setContent(pageContent);
 
-								// Se añaden los parámetros correspondientes
-								// según el recurso
-								if (resource.equals("html")) {
-									response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
-								} else {
-									response.putParameter("Content-Type", MIME.APPLICATION_XML.getMime());
-								}
-
-								// Si el recurso es xml comprobar si existe el parámetro xslt
+								// Si el recurso es xml comprobar y existe el parámetro xslt
 								if (resource.equals("xml") && parameters.containsKey("xslt")) {
 									String xslt = parameters.get("xslt");
 									Document xsltDocument = this.controller.get(xslt, "xslt");
@@ -118,10 +107,10 @@ public class HtmlManager {
 
 												// Al realizar la conversión se modifica el content type para servir el html
 												response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
+												response.setStatus(HTTPResponseStatus.S200);
 												response.setContent(writer.toString());
 												
 											} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
-												response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 												response.setStatus(HTTPResponseStatus.S400);
 												response.setContent(HTTPResponseStatus.S400.getStatus());
 											}
@@ -130,10 +119,23 @@ public class HtmlManager {
 
 									// Si no existe xslt dado muestra error
 									} else {
-										response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 										response.setStatus(HTTPResponseStatus.S404);
 										response.setContent(xslt + " " + HTTPResponseStatus.S404.getStatus());
 									}
+									
+								// Para las demás peticiones
+								} else {
+									String pageContent = this.controller.get(uuid, resource).getContent();
+									
+									// Se añaden los parámetros correspondientes según el recurso
+									if (resource.equals("html")) {
+										response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
+									} else {
+										response.putParameter("Content-Type", MIME.APPLICATION_XML.getMime());
+									}
+									
+									response.setStatus(HTTPResponseStatus.S200);
+									response.setContent(pageContent);
 								}
 
 							// Si el uuid no está en el servidor da error
@@ -142,20 +144,20 @@ public class HtmlManager {
 								response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
 							}
 
-							// Si no existe parámetro uuid muestra error
+						// Si no existe parámetro uuid muestra error
 						} else {
 							response.setStatus(HTTPResponseStatus.S400);
 							response.setContent(HTTPResponseStatus.S400.getStatus());
 						}
 
-						// Si no tiene parámetros se listan los enlaces a todas
-						// las páginas
+					// Si no tiene parámetros se listan los enlaces a todas las páginas
 					} else {
+						response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 						response.setStatus(HTTPResponseStatus.S200);
 						response.setContent(listPages());
 					}
 
-					// Si el recurso no es html, xml, xslt o xsd devuelve error
+				// Si el recurso no es html, xml, xslt o xsd devuelve error
 				} else {
 					response.setStatus(HTTPResponseStatus.S400);
 					response.setContent(HTTPResponseStatus.S400.getStatus());
@@ -165,8 +167,7 @@ public class HtmlManager {
 			break;
 
 		case POST:
-			// Comprobar si el recurso es html, xml, xslt o xsd y si existen los
-			// parámetros correspondientes
+			// Comprobar si el recurso es html, xml, xslt o xsd y si existen los parámetros correspondientes
 			String resource = request.getResourceName();
 			Map<String, String> parameters = request.getResourceParameters();
 			if ((resource.equals("html") && parameters.containsKey("html"))
@@ -190,7 +191,7 @@ public class HtmlManager {
 						response.setContent("<p>Page " + uuid + " inserted:</p>" + "<ul><li><a href=\"" + resource
 								+ "?uuid=" + uuid + "\">" + uuid + "</a></li></ul>");
 					}
-					// Para cualquiera otro recurso se inserta directamente
+				// Para cualquiera otro recurso se inserta directamente
 				} else {
 					this.controller.insert(uuid, parameters.get(resource), resource, null);
 					response.setStatus(HTTPResponseStatus.S200);
@@ -198,8 +199,7 @@ public class HtmlManager {
 							+ "?uuid=" + uuid + "\">" + uuid + "</a></li></ul>");
 				}
 
-				// Si el recurso no es html, xml, xslt o xsd o los parámetros
-				// correspondientes no existen
+			// Si el recurso no es html, xml, xslt o xsd o los parámetros correspondientes no existen
 			} else {
 				response.setStatus(HTTPResponseStatus.S400);
 				response.setContent(HTTPResponseStatus.S400.getStatus());
@@ -209,8 +209,7 @@ public class HtmlManager {
 		case DELETE:
 			String resourceDelete = request.getResourceName();
 
-			// Comprobar si el recurso es html, xml, xslt o xsd y si existe el
-			// parámetro uuid
+			// Comprobar si el recurso es html, xml, xslt o xsd y si existe el parámetro uuid
 			if ((resourceDelete.equals("html") || resourceDelete.equals("xml") || resourceDelete.equals("xslt")
 					|| resourceDelete.equals("xsd")) && request.getResourceParameters().containsKey("uuid")) {
 				String uuid = request.getResourceParameters().get("uuid");
@@ -223,13 +222,13 @@ public class HtmlManager {
 					response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
 				}
 
-				// Si el recurso no es html, xml, xslt o xsd o no existe el
-				// parámetro uuid muestra error
+			// Si el recurso no es html, xml, xslt o xsd o no existe el parámetro uuid muestra error
 			} else {
 				response.setStatus(HTTPResponseStatus.S400);
 				response.setContent(HTTPResponseStatus.S400.getStatus());
 			}
 			break;
+			
 		default:
 			break;
 		}
