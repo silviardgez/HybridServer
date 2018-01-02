@@ -10,6 +10,7 @@ public class Document {
 	public Document (String uuid, String content, String xsd){
 		this.uuid = uuid;
 		this.content = content;
+		this.xsd = xsd;
 	}
 
 	public String getUuid() {

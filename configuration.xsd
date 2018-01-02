@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/dai"
+	xmlns:tns="http://www.example.org/dai" elementFormDefault="qualified">
+
+	<element name="datosPersonales">
+		<complexType>
+			<sequence>
+				<element name="datos" type="tns:connections" minOccurs="0"
+					maxOccurs="unbounded" />
+				<element name="datos" type="tns:database" minOccurs="0"
+					maxOccurs="unbounded" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<complexType name="connections">
+		<sequence>
+			<element name="http" type="unsignedInt" />
+			<element name="webservice" type="string" />
+			<element name="numClients" type="unsignedInt" />
+		</sequence>
+	</complexType>
+
+	<complexType name="database">
+		<sequence>
+			<element name="user" type="string" />
+			<element name="password" type="string" />
+			<element name="url" type="string" />
+		</sequence>
+	</complexType>
+
+</schema>
