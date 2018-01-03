@@ -8,6 +8,8 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.xml.ws.Endpoint;
+
 import es.uvigo.esei.dai.hybridserver.html.controller.HtmlController;
 import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDAO;
 import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDBDAO;
@@ -23,8 +25,8 @@ public class HybridServer {
 	private String dbUrl;
 	private String dbUser;
 	private String dbPassword;
+	private String webService;
 	private HtmlDAO dao;
-
 
 	public HybridServer() {
 		this.numClients = 50;
@@ -51,8 +53,9 @@ public class HybridServer {
 	}
 
 	public HybridServer(Configuration configuration) {
-		this.numClients = configuration.getNumClients();
 		this.port = configuration.getHttpPort();
+		this.webService = configuration.getWebServiceURL();
+		this.numClients = configuration.getNumClients();
 		this.dbUrl = configuration.getDbURL();
 		this.dbUser = configuration.getDbUser();
 		this.dbPassword = configuration.getDbPassword();
@@ -62,7 +65,7 @@ public class HybridServer {
 	public int getPort() {
 		return this.port;
 	}
-	
+
 	public int getNumClients() {
 		return this.numClients;
 	}
@@ -70,8 +73,16 @@ public class HybridServer {
 	public HtmlDAO getDao() {
 		return this.dao;
 	}
+	
+	private String getWebService() {
+		return this.webService;
+	}
 
 	public void start() {
+		if (getWebService() != null) {
+			Endpoint.publish(getWebService(), new HybridServerImpl());
+		}
+		
 		this.serverThread = new Thread() {
 			@Override
 			public void run() {
@@ -82,7 +93,8 @@ public class HybridServer {
 						try {
 							Socket socket = serverSocket.accept();
 
-							if (stop) break;
+							if (stop)
+								break;
 
 							HtmlController htmlController = new HtmlController(getDao());
 							threadPool.execute(new ServiceThread(socket, htmlController));
@@ -106,7 +118,7 @@ public class HybridServer {
 		this.stop = true;
 
 		try (Socket socket = new Socket("localhost", getPort())) {
-			// Esta conexión se hace, simplemente, para "despertar" el hilo servidor
+		// Esta conexión se hace, simplemente, para "despertar" el hilo servidor
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

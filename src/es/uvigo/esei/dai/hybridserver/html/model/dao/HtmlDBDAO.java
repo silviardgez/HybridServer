@@ -9,11 +9,9 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.jws.WebService;
 
 import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
 
-@WebService(endpointInterface = "es.uvigo.esei.dai.hybridserver.html.model.dao")
 public class HtmlDBDAO implements HtmlDAO {
 
 	private String URLConnection;
