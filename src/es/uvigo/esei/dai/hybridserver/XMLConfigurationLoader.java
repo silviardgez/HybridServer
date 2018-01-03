@@ -34,6 +34,7 @@ public class XMLConfigurationLoader {
 		File xsdFile = new File("configuration.xsd");
 
 		Document doc = XSLTUtils.validate(xmlFile.getAbsolutePath(), xsdFile.getAbsolutePath());
+		
 		// Connections
 		NodeList connections = doc.getElementsByTagName("connections");
 		final Element connectionElement = (Element) connections.item(0);
