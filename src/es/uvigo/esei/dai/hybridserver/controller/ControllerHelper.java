@@ -1,22 +1,22 @@
-package es.uvigo.esei.dai.hybridserver.html.controller;
+package es.uvigo.esei.dai.hybridserver.controller;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import es.uvigo.esei.dai.hybridserver.HybridServerService;
-import es.uvigo.esei.dai.hybridserver.ServerConfiguration;
-import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDAO;
-import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
+import es.uvigo.esei.dai.hybridserver.model.dao.DAOHelper;
+import es.uvigo.esei.dai.hybridserver.model.entity.Document;
+import es.uvigo.esei.dai.hybridserver.ws.HybridServerService;
+import es.uvigo.esei.dai.hybridserver.ws.ServerConfiguration;
 
-public class HtmlController {
+public class ControllerHelper {
 
-	private HtmlDAO htmlDAO;
+	private DAOHelper htmlDAO;
 	private HybridServerService[] services;
 	private Map<ServerConfiguration, HybridServerService> servers = null;
 
-	public HtmlController(HtmlDAO htmlDAO, Map<ServerConfiguration, HybridServerService> servers) {
+	public ControllerHelper(DAOHelper htmlDAO, Map<ServerConfiguration, HybridServerService> servers) {
 		this.htmlDAO = htmlDAO;
 		this.servers = servers;
 		if (this.servers.size() > 0) {

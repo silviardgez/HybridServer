@@ -34,8 +34,8 @@ import org.junit.Before;
 import org.junit.runners.Parameterized.Parameters;
 
 import es.uvigo.esei.dai.hybridserver.HybridServer;
-import es.uvigo.esei.dai.hybridserver.XMLConfigurationLoader;
 import es.uvigo.esei.dai.hybridserver.utils.MySqlJdbcDatabaseTester;
+import es.uvigo.esei.dai.xml.XMLConfigurationLoader;
 
 public abstract class MultipleServersTestCase {
 	private static final int NUMBER_OF_SERVERS = 4;

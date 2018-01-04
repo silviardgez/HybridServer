@@ -1,11 +1,10 @@
-package es.uvigo.esei.dai.hybridserver.html.model.dao;
+package es.uvigo.esei.dai.hybridserver.model.dao;
 
 import java.util.List;
 
+import es.uvigo.esei.dai.hybridserver.model.entity.Document;
 
-import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
-
-public interface HtmlDAO {
+public interface DAOHelper {
 	public Document get(String uuid, String resource) throws Exception;
 	public List<Document> list(String resource) throws Exception;
 	public boolean insert(String uuid, String content, String resource, String xsd) throws Exception;

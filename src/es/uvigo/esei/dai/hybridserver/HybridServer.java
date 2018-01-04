@@ -13,11 +13,14 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.ws.Endpoint;
 
-import es.uvigo.esei.dai.hybridserver.html.controller.HtmlController;
-import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDAO;
-import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDBDAO;
-import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlMapDAO;
+import es.uvigo.esei.dai.hybridserver.controller.ControllerHelper;
+import es.uvigo.esei.dai.hybridserver.model.dao.DAOHelper;
+import es.uvigo.esei.dai.hybridserver.model.dao.DBDAOHelper;
+import es.uvigo.esei.dai.hybridserver.model.dao.MapDAOHelper;
 import es.uvigo.esei.dai.hybridserver.thread.ServiceThread;
+import es.uvigo.esei.dai.hybridserver.ws.HybridServerConnection;
+import es.uvigo.esei.dai.hybridserver.ws.HybridServerImpl;
+import es.uvigo.esei.dai.hybridserver.ws.ServerConfiguration;
 
 public class HybridServer {
 	private static final int SERVICE_PORT = 8888;
@@ -29,7 +32,7 @@ public class HybridServer {
 	private String dbUser;
 	private String dbPassword;
 	private String webService;
-	private HtmlDAO dao;
+	private DAOHelper dao;
 	private List<ServerConfiguration> servers = null;
 	private Endpoint endPoint;
 	private ExecutorService threadPool;
@@ -40,13 +43,13 @@ public class HybridServer {
 		this.dbUrl = "jdbc:mysql://localhost:3306/hstestdb";
 		this.dbUser = "hsdb";
 		this.dbPassword = "hsdbpass";
-		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
+		this.dao = new DBDAOHelper(dbUrl, dbUser, dbPassword);
 	}
 
 	public HybridServer(Map<String, String> pages) {
 		this.numClients = 50;
 		this.port = SERVICE_PORT;
-		this.dao = new HtmlMapDAO(pages);
+		this.dao = new MapDAOHelper(pages);
 	}
 
 	public HybridServer(Properties properties) {
@@ -55,7 +58,7 @@ public class HybridServer {
 		this.dbUrl = properties.getProperty("db.url");
 		this.dbUser = properties.getProperty("db.user");
 		this.dbPassword = properties.getProperty("db.password");
-		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
+		this.dao = new DBDAOHelper(dbUrl, dbUser, dbPassword);
 	}
 
 	public HybridServer(Configuration configuration) throws MalformedURLException {
@@ -65,7 +68,7 @@ public class HybridServer {
 		this.dbUrl = configuration.getDbURL();
 		this.dbUser = configuration.getDbUser();
 		this.dbPassword = configuration.getDbPassword();
-		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
+		this.dao = new DBDAOHelper(dbUrl, dbUser, dbPassword);
 		this.servers = configuration.getServers();
 	}
 
@@ -77,7 +80,7 @@ public class HybridServer {
 		return this.numClients;
 	}
 
-	public HtmlDAO getDao() {
+	public DAOHelper getDao() {
 		return this.dao;
 	}
 	
@@ -106,7 +109,7 @@ public class HybridServer {
 
 							if (stop)
 								break;
-							HtmlController htmlController = new HtmlController(getDao(), new HybridServerConnection(getServers()).connection());
+							ControllerHelper htmlController = new ControllerHelper(getDao(), new HybridServerConnection(getServers()).connection());
 							threadPool.execute(new ServiceThread(socket, htmlController));
 
 						} catch (IOException e) {

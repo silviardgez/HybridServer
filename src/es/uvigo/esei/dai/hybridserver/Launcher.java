@@ -5,6 +5,8 @@ import java.io.File;
 //import java.io.IOException;
 //import java.util.Properties;
 
+import es.uvigo.esei.dai.xml.XMLConfigurationLoader;
+
 //import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
 
 public class Launcher {

@@ -1,4 +1,4 @@
-package es.uvigo.esei.dai.hybridserver.html.model.dao;
+package es.uvigo.esei.dai.hybridserver.model.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,16 +9,15 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
+import es.uvigo.esei.dai.hybridserver.model.entity.Document;
 
-import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
-
-public class HtmlDBDAO implements HtmlDAO {
+public class DBDAOHelper implements DAOHelper {
 
 	private String URLConnection;
 	private String user;
 	private String password;
 
-	public HtmlDBDAO(String URLConnection, String user, String password) {
+	public DBDAOHelper(String URLConnection, String user, String password) {
 		this.URLConnection = URLConnection;
 		this.user = user;
 		this.password = password;

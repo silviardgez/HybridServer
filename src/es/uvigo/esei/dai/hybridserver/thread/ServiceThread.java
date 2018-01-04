@@ -23,8 +23,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import es.uvigo.esei.dai.hybridserver.html.HtmlManager;
-import es.uvigo.esei.dai.hybridserver.html.controller.HtmlController;
+import es.uvigo.esei.dai.hybridserver.controller.ControllerHelper;
 import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
 import es.uvigo.esei.dai.hybridserver.http.HTTPRequest;
 import es.uvigo.esei.dai.hybridserver.http.HTTPResponse;
@@ -33,9 +32,9 @@ import es.uvigo.esei.dai.hybridserver.http.MIME;
 
 public class ServiceThread implements Runnable {
 	private final Socket socket;
-	private HtmlController htmlController;
+	private ControllerHelper htmlController;
 
-	public ServiceThread(Socket clientSocket, HtmlController htmlController) throws IOException {
+	public ServiceThread(Socket clientSocket, ControllerHelper htmlController) throws IOException {
 		this.socket = clientSocket;
 		this.htmlController = htmlController;
 	}
@@ -45,7 +44,7 @@ public class ServiceThread implements Runnable {
 		try (Socket socket = this.socket) {
 			HTTPRequest request = new HTTPRequest(new InputStreamReader(socket.getInputStream()));
 			HTTPResponse response = new HTTPResponse();
-			HtmlManager manager = new HtmlManager(request, response, this.htmlController);
+			ManagerHelper manager = new ManagerHelper(request, response, this.htmlController);
 			
 			try {
 				manager.getResponse();

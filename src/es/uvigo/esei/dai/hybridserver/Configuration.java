@@ -20,6 +20,8 @@ package es.uvigo.esei.dai.hybridserver;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.uvigo.esei.dai.hybridserver.ws.ServerConfiguration;
+
 public class Configuration {
 	private int httpPort;
 	private int numClients;

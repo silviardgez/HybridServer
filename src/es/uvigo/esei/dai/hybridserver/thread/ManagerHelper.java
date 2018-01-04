@@ -1,4 +1,4 @@
-package es.uvigo.esei.dai.hybridserver.html;
+package es.uvigo.esei.dai.hybridserver.thread;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,22 +16,22 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.SAXException;
 
-import es.uvigo.esei.dai.hybridserver.html.controller.HtmlController;
-import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
+import es.uvigo.esei.dai.hybridserver.controller.ControllerHelper;
 import es.uvigo.esei.dai.hybridserver.http.HTTPHeaders;
 import es.uvigo.esei.dai.hybridserver.http.HTTPRequest;
 import es.uvigo.esei.dai.hybridserver.http.HTTPResponse;
 import es.uvigo.esei.dai.hybridserver.http.HTTPResponseStatus;
 import es.uvigo.esei.dai.hybridserver.http.MIME;
+import es.uvigo.esei.dai.hybridserver.model.entity.Document;
 import es.uvigo.esei.dai.hybridserver.xml.xslt.XSLTUtils;
 
-public class HtmlManager {
+public class ManagerHelper {
 
 	private HTTPRequest request;
 	private HTTPResponse response;
-	private HtmlController controller;
+	private ControllerHelper controller;
 
-	public HtmlManager(HTTPRequest request, HTTPResponse response, HtmlController controller) {
+	public ManagerHelper(HTTPRequest request, HTTPResponse response, ControllerHelper controller) {
 		this.request = request;
 		this.response = response;
 		this.controller = controller;

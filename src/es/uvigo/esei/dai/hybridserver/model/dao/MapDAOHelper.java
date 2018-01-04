@@ -1,17 +1,17 @@
-package es.uvigo.esei.dai.hybridserver.html.model.dao;
+package es.uvigo.esei.dai.hybridserver.model.dao;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
+import es.uvigo.esei.dai.hybridserver.model.entity.Document;
 
-public class HtmlMapDAO implements HtmlDAO {
+public class MapDAOHelper implements DAOHelper {
 
 	private final Map<String, String> pages;
 	
-	public HtmlMapDAO(Map<String, String> pages){
+	public MapDAOHelper(Map<String, String> pages){
 		this.pages = pages;
 	}
 	

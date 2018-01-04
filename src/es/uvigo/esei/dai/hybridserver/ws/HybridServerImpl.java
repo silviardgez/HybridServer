@@ -1,18 +1,18 @@
-package es.uvigo.esei.dai.hybridserver;
+package es.uvigo.esei.dai.hybridserver.ws;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.WebService;
 
-import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDAO;
-import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
+import es.uvigo.esei.dai.hybridserver.model.dao.DAOHelper;
+import es.uvigo.esei.dai.hybridserver.model.entity.Document;
 
 @WebService(endpointInterface = "es.uvigo.esei.dai.hybridserver.HybridServerService")
 public class HybridServerImpl implements HybridServerService {
-	private HtmlDAO dao;
+	private DAOHelper dao;
 	
-	public HybridServerImpl(HtmlDAO dao) {
+	public HybridServerImpl(DAOHelper dao) {
 		this.dao = dao;
 	}
 	

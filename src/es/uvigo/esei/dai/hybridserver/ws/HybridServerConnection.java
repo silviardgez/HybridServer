@@ -1,4 +1,4 @@
-package es.uvigo.esei.dai.hybridserver;
+package es.uvigo.esei.dai.hybridserver.ws;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,8 +35,6 @@ public class HybridServerConnection {
 				}
 			}
 		}
-
 		return hsService;
 	}
-
 }

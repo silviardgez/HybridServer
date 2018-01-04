@@ -28,8 +28,7 @@ public class XSLTUtils {
 		transformer.transform(xmlSource, result);
 	}
 
-	// Carga y validación con XSD externo (almacenado en un fichero) de un
-	// documento almacenado en un fichero con DOM
+	// Carga y validación con XSD 
 	public static Document validate(String documentPath, String schemaPath)
 			throws ParserConfigurationException, SAXException, IOException {
 		// Construcción del schema
