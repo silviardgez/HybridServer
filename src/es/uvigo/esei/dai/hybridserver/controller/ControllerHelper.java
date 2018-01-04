@@ -12,12 +12,12 @@ import es.uvigo.esei.dai.hybridserver.ws.ServerConfiguration;
 
 public class ControllerHelper {
 
-	private DAOHelper htmlDAO;
+	private DAOHelper dao;
 	private HybridServerService[] services;
 	private Map<ServerConfiguration, HybridServerService> servers = null;
 
 	public ControllerHelper(DAOHelper htmlDAO, Map<ServerConfiguration, HybridServerService> servers) {
-		this.htmlDAO = htmlDAO;
+		this.dao = htmlDAO;
 		this.servers = servers;
 		if (this.servers.size() > 0) {
 			this.services = new HybridServerService[servers.size()];
@@ -25,12 +25,14 @@ public class ControllerHelper {
 	}
 
 	public Document get(String uuid, String resource) throws Exception {
-		Document doc = this.htmlDAO.get(uuid, resource);
+		Document doc = this.dao.get(uuid, resource);
 		if (doc == null) {
 			for (HybridServerService service : getServers()) {
 				String[] remote = service.get(uuid, resource);
 				if (remote.length > 0) {
 					doc = new Document(remote[0], remote[1], remote[2]);
+					// Lo insertamos en la base de datos de local, creando sistema caché
+					this.insert(remote[0], remote[1], resource, remote[2]);
 					break;
 				}
 			}
@@ -38,6 +40,7 @@ public class ControllerHelper {
 		return doc;
 	}
 
+	// Devuelve un String en formato html con todas las páginas de todos los servidores
 	public String list() throws Exception {
 		String[] resources = { "HTML", "XML", "XSLT", "XSD" };
 		String uuids = "<h1>Local Server</h1>";
@@ -109,15 +112,23 @@ public class ControllerHelper {
 	}
 
 	public boolean insert(String uuid, String content, String resource, String xsd) throws Exception {
-		return this.htmlDAO.insert(uuid, content, resource, xsd);
+		return this.dao.insert(uuid, content, resource, xsd);
 	}
 
+	// Si es eliminado en alguno de los servidores devuelve true
 	public boolean delete(String uuid, String resource) throws Exception {
-		return this.htmlDAO.delete(uuid, resource);
+		boolean deleted = this.dao.delete(uuid, resource);
+		for(HybridServerService service : getServers()){
+			boolean remoteDeleted = service.delete(uuid, resource);
+			if(deleted == false) {
+				deleted = remoteDeleted;
+			}
+		}
+		return deleted;
 	}
 
 	private List<Document> list(String resource) throws Exception {
-		return this.htmlDAO.list(resource);
+		return this.dao.list(resource);
 	}
 
 	private HybridServerService[] getServers() {

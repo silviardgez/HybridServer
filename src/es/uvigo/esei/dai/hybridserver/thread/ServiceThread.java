@@ -53,6 +53,8 @@ public class ServiceThread implements Runnable {
 				response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 				response.setStatus(HTTPResponseStatus.S500);
 				response.setContent(HTTPResponseStatus.S500.getStatus());
+				System.out.println("INTERNAL SERVER ERROR");
+				e.printStackTrace();
 			}
 
 			OutputStream out = socket.getOutputStream();

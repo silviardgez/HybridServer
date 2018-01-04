@@ -19,7 +19,6 @@ import es.uvigo.esei.dai.hybridserver.model.dao.DBDAOHelper;
 import es.uvigo.esei.dai.hybridserver.model.dao.MapDAOHelper;
 import es.uvigo.esei.dai.hybridserver.thread.ServiceThread;
 import es.uvigo.esei.dai.hybridserver.ws.HybridServerConnection;
-import es.uvigo.esei.dai.hybridserver.ws.HybridServerImpl;
 import es.uvigo.esei.dai.hybridserver.ws.ServerConfiguration;
 
 public class HybridServer {
@@ -36,6 +35,7 @@ public class HybridServer {
 	private List<ServerConfiguration> servers = null;
 	private Endpoint endPoint;
 	private ExecutorService threadPool;
+	private HybridServerImpl hsImpl;
 
 	public HybridServer() {
 		this.numClients = 50;
@@ -94,7 +94,8 @@ public class HybridServer {
 
 	public void start() {
 		if (getWebService() != null) {
-			endPoint = Endpoint.publish(getWebService(), new HybridServerImpl(getDao()));
+			hsImpl = new HybridServerImpl(getDao());
+			endPoint = Endpoint.publish(getWebService(), hsImpl);
 		}
 		
 		this.serverThread = new Thread() {
@@ -152,5 +153,6 @@ public class HybridServer {
 
 		this.serverThread = null;
 		this.endPoint.stop();
+		this.hsImpl.stop();
 	}
 }

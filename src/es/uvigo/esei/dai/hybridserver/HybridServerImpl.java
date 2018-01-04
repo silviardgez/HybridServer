@@ -1,4 +1,4 @@
-package es.uvigo.esei.dai.hybridserver.ws;
+package es.uvigo.esei.dai.hybridserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,9 @@ import javax.jws.WebService;
 
 import es.uvigo.esei.dai.hybridserver.model.dao.DAOHelper;
 import es.uvigo.esei.dai.hybridserver.model.entity.Document;
+import es.uvigo.esei.dai.hybridserver.ws.HybridServerService;
 
-@WebService(endpointInterface = "es.uvigo.esei.dai.hybridserver.HybridServerService")
+@WebService(endpointInterface = "es.uvigo.esei.dai.hybridserver.ws.HybridServerService")
 public class HybridServerImpl implements HybridServerService {
 	private DAOHelper dao;
 	
@@ -42,6 +43,10 @@ public class HybridServerImpl implements HybridServerService {
 	@Override
 	public boolean delete(String uuid, String resource) throws Exception {
 		return this.dao.delete(uuid, resource);
+	}
+	
+	public void stop() {
+		this.stop();
 	}
 
 }

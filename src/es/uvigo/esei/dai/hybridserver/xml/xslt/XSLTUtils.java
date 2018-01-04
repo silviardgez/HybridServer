@@ -34,8 +34,7 @@ public class XSLTUtils {
 		// Construcción del schema
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema = schemaFactory.newSchema(new File(schemaPath));
-		// Construcción del parser del documento. Se establece el esquema y se
-		// activa la validación y comprobación de namespaces
+		// Construcción del parser del documento. Se establece el esquema y se activa la validación y comprobación de namespaces
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setNamespaceAware(true);
