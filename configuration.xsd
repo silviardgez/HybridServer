@@ -13,8 +13,8 @@
 				<element name="servers">
 					<complexType>
 						<sequence>
-							<element name="server" type="tns:server"
-								minOccurs="0" maxOccurs="unbounded" />
+							<element name="server" type="tns:server" minOccurs="0"
+								maxOccurs="unbounded" />
 						</sequence>
 					</complexType>
 				</element>
