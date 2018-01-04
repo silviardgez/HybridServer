@@ -108,6 +108,7 @@ public class ManagerHelper {
 												response.setContent(writer.toString());
 												
 											} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
+												response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 												response.setStatus(HTTPResponseStatus.S400);
 												response.setContent(HTTPResponseStatus.S400.getStatus());
 											}
@@ -116,6 +117,7 @@ public class ManagerHelper {
 
 									// Si no existe xslt dado muestra error
 									} else {
+										response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 										response.setStatus(HTTPResponseStatus.S404);
 										response.setContent(xslt + " " + HTTPResponseStatus.S404.getStatus());
 									}
@@ -137,12 +139,14 @@ public class ManagerHelper {
 
 							// Si el uuid no está en el servidor da error
 							} else {
+								response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 								response.setStatus(HTTPResponseStatus.S404);
 								response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
 							}
 
 						// Si no existe parámetro uuid muestra error
 						} else {
+							response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 							response.setStatus(HTTPResponseStatus.S400);
 							response.setContent(HTTPResponseStatus.S400.getStatus());
 						}
@@ -156,6 +160,7 @@ public class ManagerHelper {
 
 				// Si el recurso no es html, xml, xslt o xsd devuelve error
 				} else {
+					response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 					response.setStatus(HTTPResponseStatus.S400);
 					response.setContent(HTTPResponseStatus.S400.getStatus());
 				}
@@ -181,9 +186,11 @@ public class ManagerHelper {
 
 					// Si no existe el xsd asociado se devuelve error 404
 					if (!this.controller.insert(uuid, parameters.get(resource), resource, xsd)) {
+						response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 						response.setStatus(HTTPResponseStatus.S404);
 						response.setContent(xsd + " " + HTTPResponseStatus.S404.getStatus());
 					} else {
+						response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 						response.setStatus(HTTPResponseStatus.S200);
 						response.setContent("<p>Page " + uuid + " inserted:</p>" + "<ul><li><a href=\"" + resource
 								+ "?uuid=" + uuid + "\">" + uuid + "</a></li></ul>");
@@ -191,6 +198,7 @@ public class ManagerHelper {
 				// Para cualquiera otro recurso se inserta directamente
 				} else {
 					this.controller.insert(uuid, parameters.get(resource), resource, null);
+					response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 					response.setStatus(HTTPResponseStatus.S200);
 					response.setContent("<p>Page " + uuid + " inserted:</p>" + "<ul><li><a href=\"" + resource
 							+ "?uuid=" + uuid + "\">" + uuid + "</a></li></ul>");
@@ -198,6 +206,7 @@ public class ManagerHelper {
 
 			// Si el recurso no es html, xml, xslt o xsd o los parámetros correspondientes no existen
 			} else {
+				response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 				response.setStatus(HTTPResponseStatus.S400);
 				response.setContent(HTTPResponseStatus.S400.getStatus());
 			}
@@ -211,16 +220,19 @@ public class ManagerHelper {
 					|| resourceDelete.equals("xsd")) && request.getResourceParameters().containsKey("uuid")) {
 				String uuid = request.getResourceParameters().get("uuid");
 				if (this.controller.delete(uuid, resourceDelete)) {
+					response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 					response.setStatus(HTTPResponseStatus.S200);
 					response.setContent(
 							HTTPResponseStatus.S200.getStatus() + ": Page " + uuid + " successfully deleted.");
 				} else {
+					response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 					response.setStatus(HTTPResponseStatus.S404);
 					response.setContent(uuid + " " + HTTPResponseStatus.S404.getStatus());
 				}
 
 			// Si el recurso no es html, xml, xslt o xsd o no existe el parámetro uuid muestra error
 			} else {
+				response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 				response.setStatus(HTTPResponseStatus.S400);
 				response.setContent(HTTPResponseStatus.S400.getStatus());
 			}
@@ -241,7 +253,8 @@ public class ManagerHelper {
 
 		// Muestra enlace al listado de páginas del servidor
 		pages = "<a href='html'>Páginas disponibles</a>";
-
+		
+		response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 		response.setContent(content + pages);
 		response.setStatus(HTTPResponseStatus.S200);
 	}
