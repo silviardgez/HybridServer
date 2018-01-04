@@ -69,50 +69,46 @@ public class ManagerHelper {
 									// Comprobar que existe xslt
 									if (xsltDocument != null) {
 
-										// Recuperar xsd, error si no existe
-										if (xsltDocument.getXsd() != null) {
+										// Creamos el fichero xml
+										File fileXML = new File("request.xml");
+										BufferedWriter bwXML = new BufferedWriter(new FileWriter(fileXML));
+										bwXML.write(this.controller.get(uuid, "xml").getContent());
+										bwXML.close();
 
-											// Creamos el fichero xml
-											File fileXML = new File("request.xml");
-											BufferedWriter bwXML = new BufferedWriter(new FileWriter(fileXML));
-											bwXML.write(this.controller.get(uuid, "xml").getContent());
-											bwXML.close();
+										// Creamos el fichero xsd
+										File fileXSD = new File("request.xsd");
+										BufferedWriter bwXSD = new BufferedWriter(new FileWriter(fileXSD));
+										bwXSD.write(this.controller.get(xsltDocument.getXsd(), "xsd").getContent());
+										bwXSD.close();
 
-											// Creamos el fichero xsd
-											File fileXSD = new File("request.xsd");
-											BufferedWriter bwXSD = new BufferedWriter(new FileWriter(fileXSD));
-											bwXSD.write(this.controller.get(xsltDocument.getXsd(), "xsd").getContent());
-											bwXSD.close();
+										// Validar xml con xsd y convertirlo con xslt
+										try {
+											org.w3c.dom.Document validatedDocument = XSLTUtils.validate("request.xml",
+													"request.xsd");
 
-											// Validar xml con xsd y convertirlo con xslt
-											try {
-												org.w3c.dom.Document validatedDocument = XSLTUtils.validate("request.xml",
-														"request.xsd");
+											final StringWriter writer = new StringWriter();
 
-												final StringWriter writer = new StringWriter();
+											// Creamos el fichero xslt
+											File fileXSLT = new File("request.xsl");
+											BufferedWriter bwXSLT = new BufferedWriter(new FileWriter(fileXSLT));
+											bwXSLT.write(
+													this.controller.get(parameters.get("xslt"), "xslt").getContent());
+											bwXSLT.close();
 
-												// Creamos el fichero xslt
-												File fileXSLT = new File("request.xsl");
-												BufferedWriter bwXSLT = new BufferedWriter(new FileWriter(fileXSLT));
-												bwXSLT.write(this.controller.get(parameters.get("xslt"), "xslt")
-														.getContent());
-												bwXSLT.close();
+											// Transformamos el xml con el xslt
+											XSLTUtils.transform(new DOMSource(validatedDocument),
+													new StreamSource(fileXSLT), new StreamResult(writer));
 
-												// Transformamos el xml con el xslt
-												XSLTUtils.transform(new DOMSource(validatedDocument), new StreamSource(fileXSLT),
-														new StreamResult(writer));
+											// Al realizar la conversión se modifica el content type para servir el html
+											response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
+											response.setStatus(HTTPResponseStatus.S200);
+											response.setContent(writer.toString());
 
-												// Al realizar la conversión se modifica el content type para servir el html
-												response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
-												response.setStatus(HTTPResponseStatus.S200);
-												response.setContent(writer.toString());
-												
-											} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
-												response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
-												response.setStatus(HTTPResponseStatus.S400);
-												response.setContent(HTTPResponseStatus.S400.getStatus());
-											}
-
+										} catch (ParserConfigurationException | SAXException | IOException
+												| TransformerException e) {
+											response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
+											response.setStatus(HTTPResponseStatus.S400);
+											response.setContent(HTTPResponseStatus.S400.getStatus());
 										}
 
 									// Si no existe xslt dado muestra error
@@ -121,18 +117,18 @@ public class ManagerHelper {
 										response.setStatus(HTTPResponseStatus.S404);
 										response.setContent(xslt + " " + HTTPResponseStatus.S404.getStatus());
 									}
-									
+
 								// Para las demás peticiones
 								} else {
 									String pageContent = this.controller.get(uuid, resource).getContent();
-									
+
 									// Se añaden los parámetros correspondientes según el recurso
 									if (resource.equals("html")) {
 										response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 									} else {
 										response.putParameter("Content-Type", MIME.APPLICATION_XML.getMime());
 									}
-									
+
 									response.setStatus(HTTPResponseStatus.S200);
 									response.setContent(pageContent);
 								}
@@ -237,7 +233,7 @@ public class ManagerHelper {
 				response.setContent(HTTPResponseStatus.S400.getStatus());
 			}
 			break;
-			
+
 		default:
 			break;
 		}
@@ -253,7 +249,7 @@ public class ManagerHelper {
 
 		// Muestra enlace al listado de páginas del servidor
 		pages = "<a href='html'>Páginas disponibles</a>";
-		
+
 		response.putParameter("Content-Type", MIME.TEXT_HTML.getMime());
 		response.setContent(content + pages);
 		response.setStatus(HTTPResponseStatus.S200);
