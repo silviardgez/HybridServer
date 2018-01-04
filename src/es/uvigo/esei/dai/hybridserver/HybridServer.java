@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.ws.Endpoint;
 
@@ -31,6 +32,7 @@ public class HybridServer {
 	private HtmlDAO dao;
 	private List<ServerConfiguration> servers = null;
 	private Endpoint endPoint;
+	private ExecutorService threadPool;
 
 	public HybridServer() {
 		this.numClients = 50;
@@ -97,7 +99,7 @@ public class HybridServer {
 			public void run() {
 				try (final ServerSocket serverSocket = new ServerSocket(getPort())) {
 
-					ExecutorService threadPool = Executors.newFixedThreadPool(getNumClients());
+					threadPool = Executors.newFixedThreadPool(getNumClients());
 					while (true) {
 						try {
 							Socket socket = serverSocket.accept();
@@ -135,6 +137,14 @@ public class HybridServer {
 			this.serverThread.join();
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
+		}
+	
+		threadPool.shutdownNow();
+		 
+		try {
+		  threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+		  e.printStackTrace();
 		}
 
 		this.serverThread = null;
