@@ -45,6 +45,7 @@ public class HtmlDBDAO implements HtmlDAO {
 							document = new Document(uuid, result.getString("content"), null);
 						}
 					}
+					
 					return document;
 				}
 			}

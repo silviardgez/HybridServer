@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -63,7 +61,6 @@ public class HtmlManager {
 							String uuid = parameters.get("uuid");
 							// Comprobar si la página está en el servidor
 							if (this.controller.get(uuid, resource) != null) {
-
 								// Si el recurso es xml comprobar y existe el parámetro xslt
 								if (resource.equals("xml") && parameters.containsKey("xslt")) {
 									String xslt = parameters.get("xslt");
@@ -258,30 +255,6 @@ public class HtmlManager {
 	 *             Si ocurre un error al acceder a las páginas almacenadas
 	 */
 	private String listPages() throws Exception {
-		String[] resources = { "HTML", "XML", "XSLT", "XSD" };
-		String uuids = "<h1>Local Server</h1>";
-
-		uuids += "<ul>";
-		for (int i = 0; i < resources.length; i++) {
-			List<Document> pages = this.controller.list(resources[i]);
-			Iterator<Document> itPages = pages.iterator();
-			if (!pages.isEmpty()) {
-				while (itPages.hasNext()) {
-					Document itPage = itPages.next();
-					uuids += "<li><a href='" + resources[i].toLowerCase() + "?uuid=" + itPage.getUuid() + "'>"
-							+ itPage.getUuid() + "</a></li>";
-				}
-			}
-		}
-
-		// Si no se han añadido páginas
-		if (!uuids.contains("<li>")) {
-			uuids += "</ul>";
-			uuids += "Server is empty.";
-		} else {
-			uuids += "</ul>";
-		}
-
-		return uuids;
+		return this.controller.list();
 	}
 }

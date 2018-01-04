@@ -1,5 +1,6 @@
 package es.uvigo.esei.dai.hybridserver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.WebService;
@@ -15,14 +16,27 @@ public class HybridServerImpl implements HybridServerService {
 		this.dao = dao;
 	}
 	
+	//Devuelve el uuid de la página solicitada si lo encuentra
 	@Override
-	public Document get(String uuid, String resource) throws Exception {
-		return this.dao.get(uuid, resource);
+	public String[] get(String uuid, String resource) throws Exception {
+		String[] info = null;
+		Document doc = this.dao.get(uuid, resource);
+		if(doc != null) {
+			info = new String[3];
+			info[0] = doc.getUuid();
+			info[1] = doc.getContent();
+			info[2] = doc.getXsd();
+		}
+		return info;
 	}
 
 	@Override
-	public List<Document> list(String resource) throws Exception {
-		return this.dao.list(resource);
+	public List<String> list(String resource) throws Exception {
+		List<String> uuids = new ArrayList<>();
+		for(Document doc :this.dao.list(resource)){
+			uuids.add(doc.getUuid());
+		}
+		return uuids;
 	}
 
 	@Override

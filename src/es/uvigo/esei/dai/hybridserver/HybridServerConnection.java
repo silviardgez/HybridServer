@@ -2,7 +2,9 @@ package es.uvigo.esei.dai.hybridserver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -10,28 +12,27 @@ import javax.xml.ws.WebServiceException;
 
 public class HybridServerConnection {
 	List<ServerConfiguration> servers;
-	HybridServerService[] hsService;
+	Map<ServerConfiguration, HybridServerService> hsService;
 
 	public HybridServerConnection(List<ServerConfiguration> servers) {
 		this.servers = servers;
-		hsService = new HybridServerService[servers.size()-1];
+		hsService = new HashMap<>();
 	}
 
-	public HybridServerService[] connection() throws MalformedURLException {
-		if (servers.size() != 0) {
-			int i = 0;
+	public Map<ServerConfiguration, HybridServerService> connection() throws MalformedURLException {
+		if (this.servers.size() != 0) {
 			for (ServerConfiguration server : servers) {
 				URL url = new URL(server.getWsdl());
 				QName name = new QName(server.getNamespace(), "HybridServerImplService");
+
 				try {
-				Service service = Service.create(url, name);
-				hsService[i] = service.getPort(HybridServerService.class);
-				i++;
-				} catch(WebServiceException e) {
-					System.err.println("Servidor caído");
+					Service service = Service.create(url, name);
+					HybridServerService hs = service.getPort(HybridServerService.class);
+					hsService.put(server, hs);
+
+				} catch (WebServiceException e) {
+					System.err.println("Servidor '" + server.getName() + "' caído");
 				}
-
-
 			}
 		}
 
