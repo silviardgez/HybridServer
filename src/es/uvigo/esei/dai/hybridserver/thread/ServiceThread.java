@@ -29,6 +29,7 @@ import es.uvigo.esei.dai.hybridserver.http.HTTPParseException;
 import es.uvigo.esei.dai.hybridserver.http.HTTPRequest;
 import es.uvigo.esei.dai.hybridserver.http.HTTPResponse;
 import es.uvigo.esei.dai.hybridserver.http.HTTPResponseStatus;
+import es.uvigo.esei.dai.hybridserver.http.MIME;
 
 public class ServiceThread implements Runnable {
 	private final Socket socket;
@@ -50,6 +51,7 @@ public class ServiceThread implements Runnable {
 				manager.getResponse();
 			} catch (Exception e) {
 				//Si sucede algún error en las consultas a la BD
+				response.putParameter("Content-Type", MIME.TEXT_PLAIN.getMime());
 				response.setStatus(HTTPResponseStatus.S500);
 				response.setContent(HTTPResponseStatus.S500.getStatus());
 			}

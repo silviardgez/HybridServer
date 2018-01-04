@@ -8,7 +8,7 @@ import javax.jws.WebService;
 import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
 
 @WebService
-public interface HybridServerInterface {
+public interface HybridServerService {
 	@WebMethod
 	public Document get(String uuid, String resource) throws Exception;
 	

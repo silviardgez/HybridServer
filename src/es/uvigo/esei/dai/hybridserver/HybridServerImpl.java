@@ -4,27 +4,30 @@ import java.util.List;
 
 import javax.jws.WebService;
 
+import es.uvigo.esei.dai.hybridserver.html.model.dao.HtmlDAO;
 import es.uvigo.esei.dai.hybridserver.html.model.entity.Document;
 
-@WebService(endpointInterface = "es.uvigo.esei.dai.hybridserver.HybridServerInterface")
-public class HybridServerImpl implements HybridServerInterface {
-
+@WebService(endpointInterface = "es.uvigo.esei.dai.hybridserver.HybridServerService")
+public class HybridServerImpl implements HybridServerService {
+	private HtmlDAO dao;
+	
+	public HybridServerImpl(HtmlDAO dao) {
+		this.dao = dao;
+	}
+	
 	@Override
 	public Document get(String uuid, String resource) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dao.get(uuid, resource);
 	}
 
 	@Override
 	public List<Document> list(String resource) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dao.list(resource);
 	}
 
 	@Override
 	public boolean delete(String uuid, String resource) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		return this.dao.delete(uuid, resource);
 	}
 
 }

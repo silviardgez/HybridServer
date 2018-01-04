@@ -32,7 +32,6 @@ public class HtmlDBDAO implements HtmlDAO {
 		try (Connection connection = DriverManager.getConnection(URLConnection, user, password)) {
 
 			String sentencia = "SELECT * FROM " + resource.toUpperCase() + " WHERE uuid = ? ";
-
 			try (PreparedStatement prepStatement = connection.prepareStatement(sentencia)) {
 
 				prepStatement.setString(1, uuid);

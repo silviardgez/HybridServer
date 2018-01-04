@@ -1,8 +1,10 @@
 package es.uvigo.esei.dai.hybridserver;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -27,6 +29,8 @@ public class HybridServer {
 	private String dbPassword;
 	private String webService;
 	private HtmlDAO dao;
+	private List<ServerConfiguration> servers = null;
+	private Endpoint endPoint;
 
 	public HybridServer() {
 		this.numClients = 50;
@@ -52,7 +56,7 @@ public class HybridServer {
 		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
 	}
 
-	public HybridServer(Configuration configuration) {
+	public HybridServer(Configuration configuration) throws MalformedURLException {
 		this.port = configuration.getHttpPort();
 		this.webService = configuration.getWebServiceURL();
 		this.numClients = configuration.getNumClients();
@@ -60,6 +64,7 @@ public class HybridServer {
 		this.dbUser = configuration.getDbUser();
 		this.dbPassword = configuration.getDbPassword();
 		this.dao = new HtmlDBDAO(dbUrl, dbUser, dbPassword);
+		this.servers = configuration.getServers();
 	}
 
 	public int getPort() {
@@ -78,9 +83,13 @@ public class HybridServer {
 		return this.webService;
 	}
 
+	public List<ServerConfiguration> getServers() {
+		return servers;
+	}
+
 	public void start() {
 		if (getWebService() != null) {
-			Endpoint.publish(getWebService(), new HybridServerImpl());
+			endPoint = Endpoint.publish(getWebService(), new HybridServerImpl(getDao()));
 		}
 		
 		this.serverThread = new Thread() {
@@ -95,8 +104,7 @@ public class HybridServer {
 
 							if (stop)
 								break;
-
-							HtmlController htmlController = new HtmlController(getDao());
+							HtmlController htmlController = new HtmlController(getDao(), new HybridServerConnection(getServers()).connection());
 							threadPool.execute(new ServiceThread(socket, htmlController));
 
 						} catch (IOException e) {
@@ -130,5 +138,6 @@ public class HybridServer {
 		}
 
 		this.serverThread = null;
+		this.endPoint.stop();
 	}
 }
