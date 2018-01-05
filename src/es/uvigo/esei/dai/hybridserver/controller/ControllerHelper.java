@@ -27,20 +27,25 @@ public class ControllerHelper {
 	public Document get(String uuid, String resource) throws Exception {
 		Document doc = this.dao.get(uuid, resource);
 		if (doc == null) {
-			for (HybridServerService service : getServers()) {
-				String[] remote = service.get(uuid, resource);
-				if (remote.length > 0) {
-					doc = new Document(remote[0], remote[1], remote[2]);
-					// Lo insertamos en la base de datos de local, creando sistema caché
-					this.insert(remote[0], remote[1], resource, remote[2]);
-					break;
+			if (getServers() != null) {
+				for (HybridServerService service : getServers()) {
+					String[] remote = service.get(uuid, resource);
+					if (remote.length > 0) {
+						doc = new Document(remote[0], remote[1], remote[2]);
+						// Lo insertamos en la base de datos de local, creando
+						// sistema caché
+						this.insert(remote[0], remote[1], resource, remote[2]);
+						break;
+					}
 				}
 			}
+
 		}
 		return doc;
 	}
 
-	// Devuelve un String en formato html con todas las páginas de todos los servidores
+	// Devuelve un String en formato html con todas las páginas de todos los
+	// servidores
 	public String list() throws Exception {
 		String[] resources = { "HTML", "XML", "XSLT", "XSD" };
 		String uuids = "<h1>Local Server</h1>";
@@ -49,7 +54,7 @@ public class ControllerHelper {
 
 		// Para saber si el servidor local está vacío
 		boolean vacioLocal = true;
-		
+
 		// Listamos las páginas locales
 		for (int i = 0; i < resources.length; i++) {
 			List<Document> pages = this.list(resources[i]);
@@ -67,11 +72,11 @@ public class ControllerHelper {
 				}
 			}
 		}
-		
+
 		if (vacioLocal == true) {
 			uuids += "Server is empty.";
-		} 
-		
+		}
+
 		uuids += "</ul>";
 
 		// Listamos las páginas de los servidores
@@ -118,10 +123,12 @@ public class ControllerHelper {
 	// Si es eliminado en alguno de los servidores devuelve true
 	public boolean delete(String uuid, String resource) throws Exception {
 		boolean deleted = this.dao.delete(uuid, resource);
-		for(HybridServerService service : getServers()){
-			boolean remoteDeleted = service.delete(uuid, resource);
-			if(deleted == false) {
-				deleted = remoteDeleted;
+		if (getServers() != null) {
+			for (HybridServerService service : getServers()) {
+				boolean remoteDeleted = service.delete(uuid, resource);
+				if (deleted == false) {
+					deleted = remoteDeleted;
+				}
 			}
 		}
 		return deleted;

@@ -28,8 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import es.uvigo.esei.dai.hybridserver.Configuration;
+import es.uvigo.esei.dai.hybridserver.XMLConfigurationLoader;
 import es.uvigo.esei.dai.hybridserver.ws.ServerConfiguration;
-import es.uvigo.esei.dai.xml.XMLConfigurationLoader;
 
 public class XMLConfigurationLoaderTest {
 	private XMLConfigurationLoader xmlConfiguration;

@@ -20,7 +20,7 @@ public class HybridServerConnection {
 	}
 
 	public Map<ServerConfiguration, HybridServerService> connection() throws MalformedURLException {
-		if (this.servers.size() != 0) {
+		if (this.servers!= null && this.servers.size() != 0) {
 			for (ServerConfiguration server : servers) {
 				URL url = new URL(server.getWsdl());
 				QName name = new QName(server.getNamespace(), "HybridServerImplService");

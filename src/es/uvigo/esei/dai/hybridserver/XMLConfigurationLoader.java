@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.uvigo.esei.dai.xml;
+package es.uvigo.esei.dai.hybridserver;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import es.uvigo.esei.dai.hybridserver.Configuration;
 import es.uvigo.esei.dai.hybridserver.ws.ServerConfiguration;
 import es.uvigo.esei.dai.hybridserver.xml.xslt.XSLTUtils;
 

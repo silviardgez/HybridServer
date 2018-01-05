@@ -83,7 +83,7 @@ public class HybridServer {
 	public DAOHelper getDao() {
 		return this.dao;
 	}
-	
+
 	private String getWebService() {
 		return this.webService;
 	}
@@ -97,7 +97,7 @@ public class HybridServer {
 			hsImpl = new HybridServerImpl(getDao());
 			endPoint = Endpoint.publish(getWebService(), hsImpl);
 		}
-		
+
 		this.serverThread = new Thread() {
 			@Override
 			public void run() {
@@ -110,7 +110,8 @@ public class HybridServer {
 
 							if (stop)
 								break;
-							ControllerHelper htmlController = new ControllerHelper(getDao(), new HybridServerConnection(getServers()).connection());
+							ControllerHelper htmlController = new ControllerHelper(getDao(),
+									new HybridServerConnection(getServers()).connection());
 							threadPool.execute(new ServiceThread(socket, htmlController));
 
 						} catch (IOException e) {
@@ -132,7 +133,8 @@ public class HybridServer {
 		this.stop = true;
 
 		try (Socket socket = new Socket("localhost", getPort())) {
-		// Esta conexión se hace, simplemente, para "despertar" el hilo servidor
+			// Esta conexión se hace, simplemente, para "despertar" el hilo
+			// servidor
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -142,17 +144,20 @@ public class HybridServer {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-	
+
 		threadPool.shutdownNow();
-		 
+
 		try {
-		  threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
-		  e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		this.serverThread = null;
-		this.endPoint.stop();
-		this.hsImpl.stop();
+		
+		if (getWebService() != null) {
+			this.endPoint.stop();
+			// this.hsImpl.stop();
+		}
 	}
 }
